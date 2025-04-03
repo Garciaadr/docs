@@ -693,6 +693,7 @@ paths:
             enum:
               - pre_translate
               - assist
+              - qa_check
         -
           $ref: '#/components/parameters/PaginationLimit'
         -
@@ -2182,7 +2183,7 @@ paths:
         -
           name: branchId
           in: path
-          description: "Source Branch Identifier. Get via [List Branches](#operation/api.projects.branches.getMany).\n\n__Note__: Only the main branch (oldest branch) can be cloned."
+          description: 'Source Branch Identifier. Get via [List Branches](#operation/api.projects.branches.getMany).'
           required: true
           schema:
             type: integer
@@ -3317,6 +3318,7 @@ paths:
       tags:
         - Glossaries
       summary: 'Update concept'
+      description: '__Note:__ There is no separate method for concept creation. Concepts are automatically created when adding a term without specifying a `conceptId`.'
       operationId: api.glossaries.concepts.put
       parameters:
         -
@@ -11788,6 +11790,7 @@ paths:
       tags:
         - Glossaries
       summary: 'Add Term'
+      description: '__Note:__ If `conceptId` is not specified, a new concept will be automatically created for the term.'
       operationId: api.glossaries.terms.post
       parameters:
         -
@@ -12258,7 +12261,7 @@ paths:
               - id
           example: 'id desc'
         -
-          $ref: '#/components/parameters/TmSegmentsPaginationLimit'
+          $ref: '#/components/parameters/PaginationLimit'
         -
           $ref: '#/components/parameters/PaginationOffset'
         -
@@ -12736,6 +12739,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TmSegmentResource'
+        '204':
+          description: 'TM segment was successfully deleted'
         '400':
           description: 'Invalid Request Parameters'
           content:
@@ -14322,6 +14327,8 @@ components:
                 -
                   $ref: '#/components/schemas/ai.prompt.completion.resources.assist'
                 -
+                  $ref: '#/components/schemas/ai.prompt.completion.resources.qa_check'
+                -
                   $ref: '#/components/schemas/ai.prompt.completion.resources.custom'
     EnterpriseAiPromptCompletionCreateForm:
       required:
@@ -14341,6 +14348,8 @@ components:
                   $ref: '#/components/schemas/ai.prompt.completion.resources.assist'
                 -
                   $ref: '#/components/schemas/ai.prompt.completion.resources.alignment'
+                -
+                  $ref: '#/components/schemas/ai.prompt.completion.resources.qa_check'
                 -
                   $ref: '#/components/schemas/ai.prompt.completion.resources.custom'
     ai.prompt.completion.resources.overridePromptValues.common:
@@ -14419,6 +14428,39 @@ components:
           description: "Example: `{\"pairs\":[{\"id\":\"c61f9e77-1d0d-469a-b1ad-8c25c2c7e05c\",\"source\":\"About...\",\"translation\":\"Про...\"},{\"id\":\"8e0cdbd9-60c0-4be8-b51e-1cd6bf890902\",\"source\":\"About Me\",\"translation\":\"Про мене\"},{\"id\":\"6dbed810-353b-400d-975e-53723ab448a5\",\"source\":\"Current Password\",\"translation\":\"Створити пароль\"}]}`\n\n__Note:__ The provided data should follow the structure shown. Each object in the array must include a 'source' and 'translation' field. Other fields such as 'id' are optional. You can also include custom properties as needed."
           type: string
           example: '{"pairs":[{"id":"c61f9e77-1d0d-469a-b1ad-8c25c2c7e05c","source":"About...","translation":"Про..."},{"id":"8e0cdbd9-60c0-4be8-b51e-1cd6bf890902","source":"About Me","translation":"Про мене"},{"id":"6dbed810-353b-400d-975e-53723ab448a5","source":"Current Password","translation":"Створити пароль"}]}'
+        projectPublicDescription:
+          type: string
+          example: 'Crowdin Translations. Official effort.'
+      type: object
+      additionalProperties:
+        type: string
+    ai.prompt.completion.resources.overridePromptValues.qa_check:
+      properties:
+        sourceLanguage:
+          type: string
+          example: English
+        targetLanguage:
+          type: string
+          example: Ukrainian
+        translationUnits:
+          description: "Example: `{\"translationUnits\":[{\"id\":\"c9f4b768-5d71-4fd6-a3db-85f1f8dbe664\",\"source\":{\"id\":5515320,\"text\":\"Current Password\",\"key\":\"current_password\",\"context\":\"current_password\",\"maxLength\":null},\"translation\":{\"id\":5515321,\"text\":\"Створити пароль\"}}]}`\n\n__Note:__ The provided data should follow the structure shown. Each object in the array must include a 'source.text' and 'translation.text' field. Other fields such as 'id' are optional. You can also include custom properties as needed."
+          type: string
+          example: '{"translationUnits":[{"id":"c9f4b768-5d71-4fd6-a3db-85f1f8dbe664","source":{"id":5515320,"text":"Current Password","key":"current_password","context":"current_password","maxLength":null},"translation":{"id":5515321,"text":"Створити пароль"}}]}'
+        tm:
+          type: string
+          example: 'Create Password => Створити пароль'
+        terms:
+          type: string
+          example: "Term: Password. Translation: Пароль. Part of speech: N/A.\nTerm: password. Term doesn\\'t have a defined translation. Please translate it yourself. Part of speech: N/A."
+        fileName:
+          type: string
+          example: crowdin_sample_android.xml
+        fileContext:
+          type: string
+          example: N/A
+        projectName:
+          type: string
+          example: Crowdin
         projectPublicDescription:
           type: string
           example: 'Crowdin Translations. Official effort.'
@@ -14509,6 +14551,27 @@ components:
         overridePromptValues:
           $ref: '#/components/schemas/ai.prompt.completion.resources.overridePromptValues.alignment'
       type: object
+    ai.prompt.completion.resources.qa_check:
+      title: 'Resources for prompt with QA Check action'
+      required:
+        - projectId
+      properties:
+        projectId:
+          type: integer
+        sourceLanguageId:
+          description: '__Note__: If not specified, the source language of the project will be used'
+          type: string
+        targetLanguageId:
+          type: string
+        stringIds:
+          description: '__Note:__ Must be used together with `targetLanguageId`. You can assign up to 500 strings at a time.'
+          type: array
+          items:
+            type: integer
+            example: 78253
+        overridePromptValues:
+          $ref: '#/components/schemas/ai.prompt.completion.resources.overridePromptValues.qa_check'
+      type: object
     ai.prompt.completion.resources.custom:
       title: 'Resources for prompt with custom action'
       required:
@@ -14544,6 +14607,7 @@ components:
           enum:
             - pre_translate
             - assist
+            - qa_check
         aiProviderId:
           description: "AI Provider identifier. Get via [List AI Providers](#operation/api.ai.providers.getMany)\n\n__Note:__ Required if `isEnabled === true`"
           type: integer
@@ -14579,6 +14643,7 @@ components:
               enum:
                 - pre_translate
                 - assist
+                - qa_check
             config:
               description: 'AI prompt configuration'
               oneOf:
@@ -14587,7 +14652,9 @@ components:
                 -
                   $ref: '#/components/schemas/ai.prompt.config.basic_mode.assist'
                 -
-                  $ref: '#/components/schemas/ai.prompt.config.advanced_mode'
+                  $ref: '#/components/schemas/ai.prompt.config.basic_mode.qa_check'
+                -
+                  $ref: '#/components/schemas/ai.prompt.config.crowdin_advanced_mode'
                 -
                   $ref: '#/components/schemas/ai.prompt.config.external_mode'
     EnterpriseAiPromptCreateForm:
@@ -14608,6 +14675,7 @@ components:
                 - pre_translate
                 - assist
                 - alignment
+                - qa_check
             config:
               description: 'AI prompt configuration'
               oneOf:
@@ -14617,6 +14685,8 @@ components:
                   $ref: '#/components/schemas/ai.prompt.config.basic_mode.assist'
                 -
                   $ref: '#/components/schemas/ai.prompt.config.basic_mode.alignment'
+                -
+                  $ref: '#/components/schemas/ai.prompt.config.basic_mode.qa_check'
                 -
                   $ref: '#/components/schemas/ai.prompt.config.enterprise_advanced_mode'
                 -
@@ -14758,6 +14828,37 @@ components:
         publicProjectDescription:
           type: boolean
       type: object
+    ai.prompt.config.basic_mode.qa_check:
+      title: 'Basic mode (QA check action)'
+      required:
+        - mode
+        - evaluationSteps
+      properties:
+        mode:
+          type: string
+          enum:
+            - basic
+        evaluationSteps:
+          type: array
+          items:
+            type: string
+            example: 'Verify that any technical terms, idioms, or domain-specific vocabulary are translated correctly.'
+        customPlaceholders:
+          type: array
+          items:
+            type: string
+            example: '%custom:companyDescription%'
+        glossaryTerms:
+          type: boolean
+        tmSuggestions:
+          type: boolean
+        fileContext:
+          type: boolean
+        screenshots:
+          type: boolean
+        publicProjectDescription:
+          type: boolean
+      type: object
     ai.prompt.config.advanced_mode:
       title: 'Advanced mode'
       required:
@@ -14785,6 +14886,25 @@ components:
                 example: uk
           type: object
       type: object
+    ai.prompt.config.crowdin_advanced_mode:
+      title: 'Advanced mode'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/ai.prompt.config.advanced_mode'
+        -
+          properties:
+            otherLanguageTranslations:
+              description: '__Note:__ Not available for QA check action'
+              properties:
+                isEnabled:
+                  type: boolean
+                  default: true
+                languageIds:
+                  description: 'Array of language ids. Get via [List Supported Languages](#operation/api.languages.getMany)'
+                  type: array
+                  items: { type: string, example: uk }
+              type: object
     ai.prompt.config.enterprise_advanced_mode:
       title: 'Advanced mode'
       type: object
@@ -14797,7 +14917,7 @@ components:
               description: '__Note:__ Not available for alignment action'
               type: boolean
             otherLanguageTranslations:
-              description: '__Note:__ Not available for alignment action'
+              description: '__Note:__ Not available for alignment and QA check actions'
               properties:
                 isEnabled:
                   type: boolean
@@ -14987,6 +15107,8 @@ components:
                 -
                   $ref: '#/components/schemas/ai.prompt.config.basic_mode.alignment'
                 -
+                  $ref: '#/components/schemas/ai.prompt.config.basic_mode.qa_check'
+                -
                   $ref: '#/components/schemas/ai.prompt.config.enterprise_advanced_mode'
                 -
                   $ref: '#/components/schemas/ai.prompt.config.external_mode'
@@ -15006,7 +15128,9 @@ components:
                 -
                   $ref: '#/components/schemas/ai.prompt.config.basic_mode.assist'
                 -
-                  $ref: '#/components/schemas/ai.prompt.config.advanced_mode'
+                  $ref: '#/components/schemas/ai.prompt.config.basic_mode.qa_check'
+                -
+                  $ref: '#/components/schemas/ai.prompt.config.crowdin_advanced_mode'
                 -
                   $ref: '#/components/schemas/ai.prompt.config.external_mode'
     AiProviderPatch:
@@ -15097,6 +15221,9 @@ components:
             - google_gemini
             - mistral_ai
             - anthropic
+            - x_ai
+            - watsonx
+            - deepseek
             - custom_ai
         credentials:
           description: "User’s own AI provider credentials.\n\n__Note__: Use only if `useSystemCredentials` is set to false."
@@ -15112,6 +15239,12 @@ components:
             -
               $ref: '#/components/schemas/ai.provider.credentials.anthropic'
             -
+              $ref: '#/components/schemas/ai.provider.credentials.x_ai'
+            -
+              $ref: '#/components/schemas/ai.provider.credentials.watsonx'
+            -
+              $ref: '#/components/schemas/ai.provider.credentials.deepseek'
+            -
               $ref: '#/components/schemas/ai.provider.credentials.custom_ai'
         config: {  }
         isEnabled:
@@ -15119,7 +15252,7 @@ components:
           type: boolean
           default: true
         useSystemCredentials:
-          description: "Enables the paid service AI provider via Crowdin.\n\n__Note__: Set to true if `credentials` is not provided. Not supported for `custom_ai` type."
+          description: "Enables the paid service AI provider via Crowdin.\n\n__Note__: Set to true if `credentials` is not provided. Not supported for `custom_ai`, `x_ai`, `watsonx` and `deepseek` types."
           type: boolean
           default: false
       type: object
@@ -15186,6 +15319,7 @@ components:
                 - pre_translate
                 - assist
                 - alignment
+                - qa_check
     ai.provider.crowdin_configuration.actionRule:
       title: 'Action rule'
       type: object
@@ -15199,6 +15333,7 @@ components:
               enum:
                 - pre_translate
                 - assist
+                - qa_check
     ai.provider.credentials.open_ai:
       title: OpenAI
       required:
@@ -15262,6 +15397,41 @@ components:
       properties:
         apiKey:
           description: 'Api key'
+          type: string
+      type: object
+    ai.provider.credentials.x_ai:
+      title: xAi
+      required:
+        - apiKey
+      properties:
+        apiKey:
+          description: 'Api key'
+          type: string
+      type: object
+    ai.provider.credentials.deepseek:
+      title: DeepSeek
+      required:
+        - apiKey
+      properties:
+        apiKey:
+          description: 'API key'
+          type: string
+      type: object
+    ai.provider.credentials.watsonx:
+      title: 'IBM Watsonx'
+      required:
+        - apiKey
+        - projectId
+        - region
+      properties:
+        apiKey:
+          description: 'API key'
+          type: string
+        projectId:
+          description: 'Project ID'
+          type: string
+        region:
+          description: Region
           type: string
       type: object
     ai.provider.credentials.custom_ai:
@@ -15381,6 +15551,12 @@ components:
             -
               $ref: '#/components/schemas/ai.provider.credentials.anthropic'
             -
+              $ref: '#/components/schemas/ai.provider.credentials.x_ai'
+            -
+              $ref: '#/components/schemas/ai.provider.credentials.watsonx'
+            -
+              $ref: '#/components/schemas/ai.provider.credentials.deepseek'
+            -
               $ref: '#/components/schemas/ai.provider.credentials.custom_ai'
         config:
           type: object
@@ -15403,16 +15579,24 @@ components:
       type: object
     EnterpriseAiProvider:
       title: 'AI Provider'
-      properties:
-        config:
-          $ref: '#/components/schemas/ai.provider.enterprise_configuration'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/AiProvider'
+        -
+          properties:
+            config:
+              $ref: '#/components/schemas/ai.provider.enterprise_configuration'
     CrowdinAiProvider:
       title: 'AI Provider'
-      properties:
-        config:
-          $ref: '#/components/schemas/ai.provider.crowdin_configuration'
       type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/AiProvider'
+        -
+          properties:
+            config:
+              $ref: '#/components/schemas/ai.provider.crowdin_configuration'
     AiProxyChatCompletionCreateForm:
       oneOf:
         -
@@ -15643,6 +15827,10 @@ components:
         editorSuggestionAiPromptId:
           type: integer
           example: 5
+        qaCheckActionAiPromptId:
+          type: integer
+          example: 8
+          nullable: true
         shortcuts:
           type: array
           items:
@@ -18389,13 +18577,19 @@ components:
       description: 'Distribution Info'
       properties:
         project:
-          type: integer
+          properties:
+            id:
+              type: integer
+            wsHash:
+              type: string
+          type: object
         user:
-          type: integer
-          nullable: true
+          properties:
+            id:
+              type: integer
+          type: object
         wsUrl:
           type: string
-          nullable: true
       type: object
     DistributionRelease:
       title: 'Distribution Release'
@@ -18469,6 +18663,9 @@ components:
         hash:
           type: string
           example: 50fb350641274ba88296f97dc7e3e0c3
+        manifestUrl:
+          type: string
+          example: 'https://distributions.crowdin.net/{distribution_hash}/manifest.json'
         name:
           type: string
           example: 'Export Bundle'
@@ -18921,7 +19118,7 @@ components:
                 -
                   type: integer
     ProjectFileType:
-      description: "Values available:\n- empty value or 'auto' — Try to detect file type by extension or MIME type\n- 'android' — Android (*.xml)\n- 'macosx' — Mac OS X / iOS (*.strings)\n- 'resx' — .NET, Windows Phone (*.resx)\n- 'properties' — Java (*.properties)\n- 'gettext' — GNU GetText (*.po, *.pot)\n- 'yaml' — Ruby On Rails (*.yaml, *.yml)\n- 'php' — Hypertext Preprocessor (*.php)\n- 'json' — Generic JSON (*.json)\n- 'xml' — Generic XML (*.xml)\n- 'ini' — Generic INI (*.ini)\n- 'rc' — Windows Resources (*.rc)\n- 'resw' — Windows 8 Metro (*.resw)\n- 'resjson' — Windows 8 Metro (*.resjson)\n- 'qtts' — Nokia Qt (*.ts)\n- 'joomla' — Joomla localizable resources (*.ini)\n- 'chrome' — Google Chrome Extension (*.json)\n- 'dtd' — Mozilla DTD (*.dtd)\n- 'dklang' — Delphi DKLang (*.dklang)\n- 'flex' — Flex (*.properties)\n- 'nsh' — NSIS Installer Resources (*.nsh)\n- 'wxl' — WiX Installer (*.wxl)\n- 'xliff' — XLIFF (*.xliff, *.xlf)\n- 'xliff_two' — XLIFF 2.0 (*.xliff, *.xlf)\n- 'html' — HTML (*.html, *.htm, *.xhtml, *.xhtm, *.xht, *.hbs, *.liquid)\n- 'haml' — Haml (*.haml)\n- 'txt' — Plain Text (*.txt)\n- 'csv' — Comma Separated Values (*.csv)\n- 'md' — Markdown (*.md, *.text, *.markdown...)\n- 'flsnp' — MadCap Flare (*.flnsp, .flpgpl .fltoc)\n- 'fm_html' — Jekyll HTML (*.html)\n- 'fm_md' — Jekyll Markdown (*.md)\n- 'mediawiki' — MediaWiki (*.wiki, *.wikitext, *.mediawiki)\n- 'docx' — Microsoft Office, OpenOffice.org Documents, Adobe InDesign, Adobe FrameMaker(*.docx, *.dotx, *.docm, *.dotm, *.xlsx, *.xltx, *.xlsm, *.xltm, *.pptx, *.potx, *.ppsx, *.pptm, *.potm, *.ppsm, *.odt, *.ods, *.odg, *.odp, *.imdl, *.mif)\n- 'xlsx' — Microsoft Excel (*.xlsx)\n- 'sbv' — Youtube .sbv (*.sbv)\n- 'properties_play' — Play Framework\n- 'properties_xml' — Java Application (*.xml)\n- 'maxthon' — Maxthon Browser (*.ini)\n- 'go_json' — Go (*.gotext.json)\n- 'dita' — DITA Document (*.dita, *.ditamap)\n- 'mif' — Adobe FrameMaker (*.mif)\n- 'idml' — Adobe InDesign (*.idml)\n- 'stringsdict' — iOS (*.stringsdict)\n- 'plist' — Mac OS property list (*.plist)\n- 'vtt' — Video Subtitling and WebVTT (*.vtt)\n- 'vdf' — Steamworks Localization Valve Data File (*.vdf)\n- 'srt' — SubRip .srt (*.srt)\n- 'stf' — Salesforce (*.stf)\n- 'toml' — Toml (*.toml)\n- 'contentful_rt' — Contentful (*.json)\n- 'svg' — SVG (*.svg)\n- 'js' — JavaScript (*.js)\n- 'coffee' — CoffeeScript (*.coffee)\n- 'nestjs_i18n' - NestJS i18n\n\n__Note__: Use `docx` type to import each cell as a separate source string for XLSX file"
+      description: "Values available:\n- empty value or 'auto' — Try to detect file type by extension or MIME type\n- 'android' — Android (*.xml)\n- 'macosx' — Mac OS X / iOS (*.strings)\n- 'resx' — .NET, Windows Phone (*.resx)\n- 'properties' — Java (*.properties)\n- 'gettext' — GNU GetText (*.po, *.pot)\n- 'yaml' — Ruby On Rails (*.yaml, *.yml)\n- 'php' — Hypertext Preprocessor (*.php)\n- 'json' — Generic JSON (*.json)\n- 'xml' — Generic XML (*.xml)\n- 'ini' — Generic INI (*.ini)\n- 'rc' — Windows Resources (*.rc)\n- 'resw' — Windows 8 Metro (*.resw)\n- 'resjson' — Windows 8 Metro (*.resjson)\n- 'qtts' — Nokia Qt (*.ts)\n- 'joomla' — Joomla localizable resources (*.ini)\n- 'chrome' — Google Chrome Extension (*.json)\n- 'dtd' — Mozilla DTD (*.dtd)\n- 'dklang' — Delphi DKLang (*.dklang)\n- 'flex' — Flex (*.properties)\n- 'nsh' — NSIS Installer Resources (*.nsh)\n- 'wxl' — WiX Installer (*.wxl)\n- 'xliff' — XLIFF (*.xliff, *.xlf)\n- 'xliff_two' — XLIFF 2.0 (*.xliff, *.xlf)\n- 'html' — HTML (*.html, *.htm, *.xhtml, *.xhtm, *.xht, *.hbs, *.liquid)\n- 'haml' — Haml (*.haml)\n- 'txt' — Plain Text (*.txt)\n- 'csv' — Comma Separated Values (*.csv)\n- 'md' — Markdown (*.md, *.text, *.markdown...)\n- 'flsnp' — MadCap Flare (*.flnsp, .flpgpl .fltoc)\n- 'fm_html' — Jekyll HTML (*.html)\n- 'fm_md' — Jekyll Markdown (*.md)\n- 'mediawiki' — MediaWiki (*.wiki, *.wikitext, *.mediawiki)\n- 'docx' — Microsoft Office, OpenOffice.org Documents, Adobe InDesign, Adobe FrameMaker(*.docx, *.dotx, *.docm, *.dotm, *.xlsx, *.xltx, *.xlsm, *.xltm, *.pptx, *.potx, *.ppsx, *.pptm, *.potm, *.ppsm, *.odt, *.ods, *.odg, *.odp, *.imdl, *.mif)\n- 'xlsx' — Microsoft Excel (*.xlsx)\n- 'sbv' — Youtube .sbv (*.sbv)\n- 'properties_play' — Play Framework\n- 'properties_xml' — Java Application (*.xml)\n- 'maxthon' — Maxthon Browser (*.ini)\n- 'go_json' — Go (*.gotext.json)\n- 'dita' — DITA Document (*.dita, *.ditamap)\n- 'mif' — Adobe FrameMaker (*.mif)\n- 'idml' — Adobe InDesign (*.idml)\n- 'stringsdict' — iOS (*.stringsdict)\n- 'plist' — Mac OS property list (*.plist)\n- 'vtt' — Video Subtitling and WebVTT (*.vtt)\n- 'vdf' — Steamworks Localization Valve Data File (*.vdf)\n- 'srt' — SubRip .srt (*.srt)\n- 'stf' — Salesforce (*.stf)\n- 'toml' — Toml (*.toml)\n- 'contentful_rt' — Contentful (*.json)\n- 'svg' — SVG (*.svg)\n- 'js' — JavaScript (*.js)\n- 'coffee' — CoffeeScript (*.coffee)\n- 'nestjs_i18n' - NestJS i18n\n- 'loc' — LOC (*.loc)\n\n__Note__: Use `docx` type to import each cell as a separate source string for XLSX file"
       type: string
       default: auto
       enum:
@@ -18989,6 +19186,7 @@ components:
         - fbt
         - webxml
         - nestjs_i18n
+        - loc
       example: xliff
     SpreadsheetLanguageCodeColumnNumber:
       title: 'Language Code Column Number'
@@ -20964,158 +21162,6 @@ components:
           items:
             $ref: '#/components/schemas/Term'
       type: object
-    GroupPatch:
-      description: 'A JSON Patch document as defined by <a href="https://tools.ietf.org/html/rfc6902#section-3" target="_blank">RFC 6902</a>'
-      type: array
-      items:
-        $ref: '#/components/schemas/GroupOperation'
-    GroupOperation:
-      description: 'A JSON Patch operation as defined by [RFC 6902](https://tools.ietf.org/html/rfc6902#section-4)'
-      required:
-        - op
-        - path
-      properties:
-        op:
-          description: 'Patch operation to perform'
-          type: string
-          enum:
-            - replace
-            - test
-        path:
-          description: 'A JSON Pointer as defined by <a href="https://tools.ietf.org/html/rfc6901" target="_blank">RFC 6901</a>'
-          type: string
-          format: json-pointer
-          enum:
-            - /name
-            - /description
-            - /parentId
-      type: object
-      discriminator:
-        propertyName: op
-        mapping:
-          replace: '#/components/schemas/GroupOperationReplace'
-          test: '#/components/schemas/GroupOperationTest'
-    GroupOperationReplace:
-      description: 'A JSON Patch `Replace` operation as defined by [RFC 6902](https://tools.ietf.org/html/rfc6902#section-4.3)'
-      required:
-        - value
-      type: object
-      allOf:
-        -
-          $ref: '#/components/schemas/GroupOperation'
-        -
-          properties:
-            value:
-              oneOf:
-                -
-                  type: string
-                -
-                  type: integer
-    GroupOperationTest:
-      description: 'A JSON Patch `Replace` operation as defined by [RFC 6902](https://tools.ietf.org/html/rfc6902#section-4.3)'
-      required:
-        - value
-      type: object
-      allOf:
-        -
-          $ref: '#/components/schemas/GroupOperation'
-        -
-          properties:
-            value:
-              oneOf:
-                -
-                  type: string
-                -
-                  type: array
-                  items: { type: string }
-    GroupCreateForm:
-      required:
-        - name
-      properties:
-        name:
-          description: 'Group Name'
-          type: string
-          example: 'KB materials'
-        parentId:
-          description: 'Parent Group Identifier. Get via [List Groups](#operation/api.groups.getMany)'
-          type: integer
-          example: '2'
-        description:
-          description: 'Group description'
-          type: string
-          example: 'KB localization materials'
-      type: object
-    GroupCollectionResource:
-      description: 'Group Collection Resource'
-      type: object
-      allOf:
-        -
-          $ref: '#/components/schemas/CollectionResource'
-        -
-          $ref: '#/components/schemas/CollectionResource'
-        -
-          properties:
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/GroupResource'
-            pagination:
-              $ref: '#/components/schemas/Pagination'
-    GroupResource:
-      description: 'Group Resource'
-      type: object
-      allOf:
-        -
-          $ref: '#/components/schemas/Resource'
-        -
-          properties:
-            data:
-              $ref: '#/components/schemas/Group'
-    Group:
-      title: Group
-      description: 'Class GroupResponseModel'
-      properties:
-        id:
-          type: integer
-          example: 1
-          nullable: true
-        name:
-          type: string
-          example: 'KB materials'
-        description:
-          type: string
-          example: 'KB localization materials'
-        parentId:
-          type: integer
-          example: 2
-        organizationId:
-          type: integer
-          example: 200000299
-        userId:
-          type: integer
-          example: 6
-        subgroupsCount:
-          type: integer
-          example: 0
-          nullable: true
-        projectsCount:
-          type: integer
-          example: 1
-          nullable: true
-        webUrl:
-          type: string
-          example: 'https://example.crowdin.com/u/groups/123'
-        createdAt:
-          type: string
-          format: date-time
-          example: '2019-09-20T11:11:05+00:00'
-          nullable: true
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2019-09-20T12:22:20+00:00'
-          nullable: true
-      type: object
     BackgroundUploadForm:
       required:
         - storageId
@@ -22356,7 +22402,7 @@ components:
             - perfectMatchOnly
             - none
         duplicateTranslations:
-          description: "Adds translations even if the same translation already exists. Default is `false`\n\n__Note:__ Works only with TM pre-translation method"
+          description: 'Adds translations even if the same translation already exists. Default is `false`'
           type: boolean
           default: false
         skipApprovedTranslations:
@@ -22794,6 +22840,7 @@ components:
             - /aiPreTranslate
             - /assistActionAiPromptId
             - /editorSuggestionAiPromptId
+            - /qaCheckActionAiPromptId
             - /savingsReportSettingsTemplateId
           x-doc-sections:
             - string-based
@@ -23306,6 +23353,10 @@ components:
           description: 'AI Prompt ID to be used as prompt for AI Suggestion action in Editor'
           type: integer
           example: 13
+        qaCheckActionAiPromptId:
+          description: 'AI Prompt ID to be used as prompt for QA check action'
+          type: integer
+          example: 8
         savingsReportSettingsTemplateId:
           description: 'Report Settings Templates Identifier. Get via [List Report Settings Templates](#operation/api.projects.reports.settings-templates.getMany)'
           type: integer
@@ -24726,6 +24777,10 @@ components:
               type: integer
               example: 2
               nullable: true
+            qaCheckActionAiPromptId:
+              type: integer
+              example: 8
+              nullable: true
             inContext:
               type: boolean
               example: true
@@ -25642,6 +25697,10 @@ components:
         editorSuggestionAiPromptId:
           type: integer
           example: 2
+        qaCheckActionAiPromptId:
+          type: integer
+          example: 8
+          nullable: true
       type: object
     SystemStringsExporterSettings:
       title: 'String Exporter Settings'
@@ -26018,6 +26077,20 @@ components:
           allOf:
             -
               $ref: '#/components/schemas/post-edit-report-settings-template-form.net-rate-schemes'
+        calculateInternalMatches:
+          type: boolean
+          default: false
+        includePreTranslatedStrings:
+          type: boolean
+          default: false
+        excludeApprovalsForEditedTranslations:
+          description: 'Exclude approvals when the same user has made translations for the string.'
+          type: boolean
+          default: false
+        preTranslatedStringsCategorizationAdjustment:
+          description: 'Repetitive translations of pre-translated strings are reported under TM or MT match rates instead of Other suggestion match rates, depending on the initial pre-translation type.'
+          type: boolean
+          default: false
       type: object
     post-edit-report-settings-template-form.base-rates:
       required:
@@ -26027,11 +26100,9 @@ components:
         fullTranslation:
           description: 'Applies to all languages by default'
           type: number
-          format: float
           example: 0.1
         proofread:
           type: number
-          format: float
           example: 0.12
       type: object
     post-edit-report-settings-template-form.individual-rate:
@@ -26055,11 +26126,9 @@ components:
             example: 1
         fullTranslation:
           type: number
-          format: float
           example: 0.1
         proofread:
           type: number
-          format: float
           example: 0.12
       type: object
     post-edit-report-settings-template-form.net-rate-schemes:
@@ -26094,16 +26163,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - perfect
-            - '100'
-            - 99-82
-            - 81-60
-          example: perfect
+          example: 100-82
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     post-edit-report-settings-template-form.net-rate-schemes.mt-match.net-rate:
@@ -26114,15 +26177,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - '100'
-            - 99-82
-            - 81-60
           example: '100'
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     post-edit-report-settings-template-form.net-rate-schemes.ai-match.net-rate:
@@ -26133,15 +26191,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - '100'
-            - 99-82
-            - 81-60
-          example: '100'
+          example: 100-93
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     post-edit-report-settings-template-form.net-rate-schemes.suggestion-match.net-rate:
@@ -26152,18 +26205,14 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - '100'
-            - 99-82
-          example: '100'
+          example: perfect
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     PreTranslateAccuracy:
-      title: 'Pre Translate Accuracy'
+      title: 'Pre-translation Accuracy'
       description: "Calculate the accuracy of the pre-translation process\n\n__Note:__ The strings included in this report must be approved and have at least one \"pre-translate\" type translation. All other human translations will not be considered in this report, except in cases where such a translation is approved and used as a reference."
       required:
         - name
@@ -26177,7 +26226,7 @@ components:
             - pre-translate-accuracy
           example: pre-translate-accuracy
         schema:
-          description: 'Pre Translate Accuracy Report schema'
+          description: 'Pre-translation Accuracy Report schema'
           type: object
           oneOf:
             -
@@ -27687,6 +27736,20 @@ components:
           allOf:
             -
               $ref: '#/components/schemas/post-edit-report-settings-template-form.net-rate-schemes'
+        calculateInternalMatches:
+          type: boolean
+          default: false
+        includePreTranslatedStrings:
+          type: boolean
+          default: false
+        excludeApprovalsForEditedTranslations:
+          description: 'Exclude approvals when the same user has made translations for the string.'
+          type: boolean
+          default: false
+        preTranslatedStringsCategorizationAdjustment:
+          description: 'Repetitive translations of pre-translated strings are reported under TM or MT match rates instead of Other suggestion match rates, depending on the initial pre-translation type.'
+          type: boolean
+          default: false
       type: object
     user-post-edit-report-settings-template-form.individual-rate:
       required:
@@ -27702,11 +27765,9 @@ components:
             example: uk
         fullTranslation:
           type: number
-          format: float
           example: 0.1
         proofread:
           type: number
-          format: float
           example: 0.12
       type: object
     ReportSettingsTemplateCollectionResource:
@@ -27907,6 +27968,20 @@ components:
           allOf:
             -
               $ref: '#/components/schemas/post-edit-report-settings-template.net-rate-schemes'
+        calculateInternalMatches:
+          type: boolean
+          default: false
+        includePreTranslatedStrings:
+          type: boolean
+          default: false
+        excludeApprovalsForEditedTranslations:
+          description: 'Exclude approvals when the same user has made translations for the string.'
+          type: boolean
+          default: false
+        preTranslatedStringsCategorizationAdjustment:
+          description: 'Repetitive translations of pre-translated strings are reported under TM or MT match rates instead of Other suggestion match rates, depending on the initial pre-translation type.'
+          type: boolean
+          default: false
       type: object
     post-edit-report-settings-template.base-rates:
       required:
@@ -27916,11 +27991,9 @@ components:
         fullTranslation:
           description: 'Applies to all languages by default'
           type: number
-          format: float
           example: 0.1
         proofread:
           type: number
-          format: float
           example: 0.12
       type: object
     post-edit-report-settings-template.individual-rate:
@@ -27944,11 +28017,9 @@ components:
             example: 1
         fullTranslation:
           type: number
-          format: float
           example: 0.1
         proofread:
           type: number
-          format: float
           example: 0.12
       type: object
     post-edit-report-settings-template.net-rate-schemes:
@@ -27986,16 +28057,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - perfect
-            - '100'
-            - 99-82
-            - 81-60
-          example: perfect
+          example: '100'
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     post-edit-report-settings-template.net-rate-schemes.mt-match.net-rate:
@@ -28006,15 +28071,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - '100'
-            - 99-82
-            - 81-60
-          example: '100'
+          example: 100-82
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     post-edit-report-settings-template.net-rate-schemes.ai-match.net-rate:
@@ -28025,15 +28085,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - '100'
-            - 99-82
-            - 81-60
-          example: '100'
+          example: 100-74
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     post-edit-report-settings-template.net-rate-schemes.suggestion-match.net-rate:
@@ -28044,14 +28099,10 @@ components:
         matchType:
           description: 'Match type, %'
           type: string
-          enum:
-            - '100'
-            - 99-82
-          example: '100'
+          example: perfect
         price:
           description: 'Price, %'
           type: number
-          format: float
           example: 0.1
       type: object
     GroupReportGenerate:
@@ -28260,6 +28311,20 @@ components:
           allOf:
             -
               $ref: '#/components/schemas/post-edit-report-settings-template.net-rate-schemes'
+        calculateInternalMatches:
+          type: boolean
+          default: false
+        includePreTranslatedStrings:
+          type: boolean
+          default: false
+        excludeApprovalsForEditedTranslations:
+          description: 'Exclude approvals when the same user has made translations for the string.'
+          type: boolean
+          default: false
+        preTranslatedStringsCategorizationAdjustment:
+          description: 'Repetitive translations of pre-translated strings are reported under TM or MT match rates instead of Other suggestion match rates, depending on the initial pre-translation type.'
+          type: boolean
+          default: false
       type: object
     user-post-edit-report-settings-template.individual-rate:
       required:
@@ -28281,11 +28346,9 @@ components:
           example: []
         fullTranslation:
           type: number
-          format: float
           example: 0.1
         proofread:
           type: number
-          format: float
           example: 0.12
       type: object
     RevisionCollectionResource:
@@ -29829,6 +29892,11 @@ components:
           description: "Plural form. Acceptable keys are `zero`, `one`, `two`, `few`, `many`, and `other`\n\n__Note:__ Will be saved only if the source string has plurals and `pluralCategoryName` is equal to the one available for the language you add translations to"
           type: string
           example: few
+        addToTm:
+          description: 'Defines whether to add translation to TM'
+          type: boolean
+          default: true
+          example: false
       type: object
     TranslationVoteCreateForm:
       required:
@@ -30267,7 +30335,6 @@ components:
             - microsoft
             - deepl
             - amazon
-            - watson
             - modernmt
             - crowdin
             - custom_mt
@@ -30710,7 +30777,7 @@ components:
           enum:
             - /isArchived
         value:
-          description: "Acceptable values:\n\n* `true` – archive task\n* `false` – move a task from archived to a list of all tasks."
+          description: "Acceptable values:\n\n     * `true` – archive task\n     * `false` – move a task from archived to a list of all tasks."
           type: boolean
           default: true
           example: true
@@ -33850,6 +33917,9 @@ components:
         email:
           type: string
           example: jsmith@example.com
+        emailVerified:
+          type: boolean
+          example: 'false'
         fullName:
           description: 'First Name'
           type: string
@@ -35041,6 +35111,10 @@ components:
           type: boolean
           default: true
           example: true
+        ai:
+          type: boolean
+          default: true
+          example: true
       type: object
     qaChecksIgnorableCategories:
       properties:
@@ -35105,6 +35179,10 @@ components:
           default: true
           example: true
         numbers:
+          type: boolean
+          default: true
+          example: true
+        ai:
           type: boolean
           default: true
           example: true
@@ -35242,11 +35320,13 @@ components:
             type: integer
             example: 1
           createdAt:
+            description: 'Date in UTC, ISO 8601'
             type: string
             format: date-time
             example: '2019-09-16T13:48:04+00:00'
             nullable: true
           updatedAt:
+            description: 'Date in UTC, ISO 8601'
             type: string
             format: date-time
             example: '2019-09-16T13:48:04+00:00'
@@ -35688,6 +35768,7 @@ components:
           - spellcheck
           - icu_check
           - numbers_check
+          - ai_check
         example: 'capitalize_check,punctuation_check'
     QaCheckCategory:
       name: category
@@ -35708,6 +35789,7 @@ components:
           - spellcheck
           - icu
           - numbers
+          - ai
         example: 'variables,tags'
     TaskStatisticStatus:
       name: status
@@ -35976,15 +36058,6 @@ components:
       required: true
       schema:
         type: integer
-    TmSegmentsPaginationLimit:
-      name: limit
-      in: query
-      description: 'A maximum number of items to retrieve'
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-        minimum: 1
     SegmentId:
       name: segmentId
       in: path
@@ -36469,7 +36542,7 @@ tags:
     description: "\nTranslation Memory (TM) is a vault of translations that were previously made in other projects. Those translations can be reused to speed up the translation process. Every translation made in the project is automatically added to the project Translation Memory.\n\nUse API to create, upload, download, or remove specific TM. Translation Memory export and import are [asynchronous operations](#section/Introduction/Asynchronous-Operations) and shall be completed with sequence of API methods.\n"
   -
     name: 'Machine Translation Engines'
-    description: "\nMachine Translation Engines (MTE) are the sources for pre-translations. You can currently connect Google Translate, Microsoft Translator, Crowdin Translate, DeepL Pro, Amazon Translate, and Watson (IBM) Translate engines.\n\nUse API to add, update, and delete specific MTE.\n"
+    description: "\nMachine Translation Engines (MTE) are the sources for pre-translations. You can currently connect Google Translate, Microsoft Translator, Crowdin Translate, DeepL Pro and Amazon Translate engines.\n\nUse API to add, update, and delete specific MTE.\n"
   -
     name: 'Translation Status'
     description: "\nStatus represents the general localization progress on both translations and proofreading.\n\nUse API to check translation and proofreading progress on different levels: file, language, branch, directory.\n"

@@ -25,6 +25,10 @@ You can expand your AI provider options by installing respective applications fr
 
 Crowdin AI integration provides powerful capabilities for enhancing localization workflows. Configuring AI involves [setting up providers](#configuring-ai-providers) and [creating prompts](#configuring-ai-prompts).
 
+<Aside type="tip">
+  Configure Crowdin AI in a few quick steps using the [AI Setup Wizard](/ai-setup-wizard/).
+</Aside>
+
 ### Configuring AI Prompts
 
 Prompt engineering is crucial for guiding AI in understanding context and providing accurate translations. Customizing prompts within Crowdin ensures that AI algorithms comprehend the nuances of your project, resulting in improved translation quality.
@@ -40,17 +44,14 @@ To configure AI prompts, follow these steps:
   2. In the **Prompts** tab, click **Add prompt**. Alternatively, you can go ahead with creating prompt samples clicking **Try a sample**. Crowdin allows you to quickly set up pre-configured prompts that are ready to perform effectively from the moment they are created. While these samples are designed to work good initially, you can customize them to your personal preferences.
   3. In the appeared dialog, set the prompt parameters:
       * Select **Enabled**
-      * Select the prompt type (i.e., Pre-translate, AI in editor, or Create custom type)
-      * Custom type name (Specific to the custom type prompt)
+      * Select the prompt type (i.e., [Pre-translate](#pre-translation-via-ai), [AI in editor](#using-ai-in-the-editor), [QA check](#ai-qa-check), or Create custom type)
+      * Custom type name (Specific to the custom prompt type)
       * Title
       * AI Provider
       * AI Model
       * Use this prompt as the default prompt for AI in editor (Specific to the AI in editor prompt type)
       * Mode (i.e., Basic or Advanced)
       * Additional context (Basic mode) &ndash; specify which data will be included in the prompt using the following fields:
-          * Company description
-          * Project description
-          * Audience description
           * String context
           * String identifier (key)
           * Translation max. length
@@ -58,24 +59,30 @@ To configure AI prompts, follow these steps:
           * Glossary terms &ndash; allows AI to consider domain glossary terms.
           * TM suggestions &ndash; allows AI to consider TM suggestions.
           * Previous and next strings &ndash; allows AI to consider previous and next strings for additional context.
-          * File context &ndash; allows AI to consider a textual description of the file added in the file settings. <ReadMore>Read more about [File context](/file-management/#file-context).</ReadMore>
+          * File context &ndash; allows AI to consider a textual description of the file added in the [file settings](/file-management/#file-context) or in the [Editor](/online-editor/#file-context).
           * Screenshots &ndash; allows AI to consider a visual context in the form of screenshots where the strings are tagged. This enhances accuracy and context awareness. <ReadMore>Read more about [Screenshots](/screenshots/).</ReadMore>
           * Public project description &ndash; allows AI to consider public project description.
+          * Custom placeholders &ndash; select reusable placeholders previously created in your Crowdin account's AI settings from a drop-down menu to quickly insert standard text snippets into your prompt.
+          * Evaluation steps (Specific to the QA check prompt type) &ndash; criteria the AI uses to evaluate translations. You can customize, remove, or create new steps tailored to your quality requirements.
           <Image src={configuringPromptBasic} alt="Configuring AI Prompt (Basic Mode)" />
       * Advanced mode &ndash; click **Advanced mode** to compose your prompt in the most precise way. While composing your prompt in the Advanced mode, you can increase translation quality by leveraging context information in your prompts using the following placeholders:
-          * `%sourceLanguage%` &ndash; The name of the source language for the project.
-          * `%targetLanguage%` &ndash; The name of the target language for translation.
+          * `%sourceLanguage%` &ndash; The source language of the project.
+          * `%targetLanguage%` &ndash; The language the content is translated into.
+          * `%targetLanguages%` &ndash; A list of all project’s target languages.
           * `%pluralForms%` &ndash; A list of plural forms for the target language.
           * `%strings%` &ndash; A collection of strings for the current segment, including the string identifier (key), context, text, maximum length, and translations to other languages (if the translations placeholder is specified).
+          * `%translationUnits%` &ndash; A list of translation units (source and translation) for the AI to evaluate during QA checks.
           * `%fileName%` &ndash; The file name of the current segment.
           * `%fileContext%` &ndash; The file context of the current segment (provided via the file settings modal in the 'Files' tab).
           * `%siblingsStrings%` &ndash; The previous and next segments in the file, allowing for contextual translation.
+          * `%filteredStrings%` &ndash; Strings that match the current filter in the Editor, provided to AI for improved evaluation accuracy and efficiency.
           * `%tm%` &ndash; Translation Memory (TM) matches relevant to the current segment.
           * `%terms%` &ndash; All the glossary terms relevant to the current segment.
           * `%projectName%` &ndash; Crowdin project name.
           * `%projectPublicDescription%` &ndash; Project public description.
+          * Custom placeholders &ndash; insert reusable placeholders previously defined in your Crowdin account's AI settings by using the `%custom:placeholderName%` format.
           <Image src={configuringPromptAdvanced} alt="Configuring AI Prompt (Advanced Mode)" />
-      * Visibility &ndash; select specific projects where a prompt can be used or leave this field as is to allow a prompt usage across all projects.
+      * Visibility &ndash; select specific projects where a prompt can be used or leave this field as is to allow prompt usage across all projects.
   4. Click **Create**.
 </Steps>
 
@@ -161,10 +168,13 @@ In the **Providers** tab, you can view the list of providers with the following 
 Currently, Crowdin supports the following AI providers:
 
 * OpenAI
-* Google Gemini
 * Microsoft Azure OpenAI
+* Google Gemini
 * Mistral AI
 * Anthropic
+* xAI
+* IBM Watsonx
+* DeepSeek
 
 New AI providers are added regularly.
 
@@ -182,14 +192,18 @@ To configure an AI provider, follow these steps:
   4. *(Optional)* Select the **\{Provider} managed by Crowdin** option if you'd like to use the providers managed by Crowdin. In this case, you'll need to [add funds to your account balance](#adding-funds-to-account-balance).
   5. Specify your own AI provider API key. Follow AI provider instructions on how to generate an API key.
   6. AI providers like Google Gemini and Microsoft Azure Open AI have slightly different configuration options compared to others:
-      * Project ID (Specific to Google Gemini)
-      * Region (Specific to Google Gemini)
+      * Project ID (Specific to Google Gemini and IBM Watsonx)
+      * Region (Specific to Google Gemini and IBM Watsonx)
       * Service Account Key (Specific to Google Gemini)
       * Resource name (Specific to Microsoft Azure Open AI)
       * Deployment name (Specific to Microsoft Azure Open AI)
       * API Version (Specific to Microsoft Azure Open AI)
   7. Click the **Advanced settings** to access the model-related settings:
       * In the **Models** section, for each prompt type (i.e., Pre-translate and Ai in editor), select the preferred models you'd like to use from the drop-down menu or leave these fields as is to use all available models.
+      * **Override Base URL** &ndash; Allows you to direct AI provider requests to a custom or region-specific endpoint rather than the default URL. Use this if you have a dedicated instance, compliance requirements, or need to route requests to a specific environment. Otherwise, you can leave this field blank.
+        <Aside>
+          For Microsoft Azure OpenAI, Crowdin expects the default Azure URL structure. For example: `https://{baseUrl}/deployments/{deploymentName}/chat/completions`
+        </Aside>
   8. Click **Update**.
 </Steps>
 
@@ -232,6 +246,10 @@ Select the default prompt for AI suggestions that will appear in the Editor acro
   Using **AI Assistant in editor** and **AI Suggestion in editor** may increase token usage.
 </Aside>
 
+#### AI QA Check {#ai-qa-check-account-settings}
+
+Select the default prompt for AI-powered QA checks across all projects in your Crowdin account. If no account-wide setting is configured and no prompt is manually selected for a specific project, the AI-powered check will not be applied in that project. Once a prompt is selected, Crowdin will use it to automatically detect and suggest fixes for translation issues during the translation process.
+
 #### Shortcuts for chat with AI in editor
 
 Shortcuts provide quick actions in the Editor to start AI interactions. Create shortcuts with specific instructions for the AI to quickly access frequently used actions across projects. These shortcuts are global, applying to all projects, although individual users can create their own in the **Editor Settings > AI** tab.
@@ -267,6 +285,40 @@ To create a new global shortcut that will be available for all your projects, fo
   description="Configure and manage AI Prompts for use in a project."
   href="/project-settings/ai/"
 />
+
+#### Custom Placeholders for AI Prompts
+
+Custom placeholders are reusable elements you can add to multiple AI prompts. They allow you to manage commonly used text snippets, descriptions, or instructions from a single location, ensuring consistency across prompts and saving time.
+
+In the **Custom Placeholders for AI Prompts** section, you can view placeholders with the following details:
+
+* **Placeholder** – the unique identifier used to insert the placeholder into prompts.
+* **Description** – a brief explanation of the placeholder's purpose.
+* **Created at** – date the placeholder was created.
+
+Use the **Search** field to quickly find specific placeholders.
+
+To create a new custom placeholder for AI prompts, follow these steps:
+
+<Steps>
+  1. Click <Icon name="mdi:plus" class="inline-icon"/> **Add Custom Placeholder** in the **Custom Placeholders for AI Prompts** section.
+  2. In the appeared dialog, specify:
+     * Placeholder identifier (automatically prefixed with `custom:`).
+     * A brief description for easy identification.
+     * The placeholder value (the actual text inserted into prompts).
+  3. Click **Save**.
+</Steps>
+
+To edit or delete a custom placeholder, follow these steps:
+
+<Steps>
+  1. Click <Icon name="mdi:dots-horizontal" class="inline-icon" /> in the *Actions* column on the desired placeholder.
+  2. Choose the action:
+     * **Edit** &ndash; update the placeholder's description and value, then click **Save**.
+     * **Delete** &ndash; confirm the action to permanently remove the placeholder.
+</Steps>
+
+Once created, placeholders are immediately available for use in both Basic and Advanced prompt modes across all your projects.
 
 ## Pre-translation via AI
 
@@ -324,6 +376,47 @@ When sending prompts to the AI Assistant, the instruction priorities are conside
 1. Instructions specified in the [**AI in editor** prompt settings](#configuring-ai-prompts).
 2. Instructions specified in the custom prompt settings.
 3. Instructions specified in the prompt shortcut or manually entered in the AI Assistant chat.
+
+## AI QA Check
+
+AI QA Check uses AI to automatically evaluate translations against defined quality standards. It helps translators quickly identify and resolve issues, ensuring accuracy, consistency, and compliance with project-specific requirements. AI QA Check complements and extends default QA Checks by providing comprehensive flexibility, reducing manual review efforts, and enhancing overall translation quality.
+
+### How AI QA Check Works
+
+When enabled, AI QA Check evaluates each submitted translation against a set of customizable evaluation criteria (Evaluation steps) defined in the configured QA Check prompt. Issues detected by the AI appear directly within the Editor as warnings, along with concise suggestions for corrections.
+
+Evaluation steps may include:
+
+* **Accuracy** – Ensuring no content is omitted, added, or incorrectly translated.
+* **Fluency** – Checking grammar, spelling, punctuation, and readability.
+* **Terminology** – Confirming consistent and correct use of project-specific terms.
+* **Style** – Verifying translations align with defined stylistic guidelines.
+* **Design** – Ensuring translations fit design constraints, including length and markup.
+* **Locale Convention** – Adapting formats for dates, currencies, addresses, and more.
+* **Cultural Adaptation (Verity)** – Localizing culture-specific references appropriately.
+* **General Issues** – Identifying other miscellaneous quality issues.
+
+For example, if a translation deviates from established glossary terms or fails to meet local formatting standards, the AI will highlight this and offer recommendations, guiding translators to achieve compliance and consistency.
+
+### Setting Up AI QA Check
+
+To use AI QA Check, create and configure a [QA Check prompt](#configuring-ai-prompts). Each QA Check prompt contains clearly defined evaluation steps the AI follows to detect translation issues. Unlike other AI prompts, the QA Check prompt includes a dedicated **Evaluation steps** section, allowing you to customize, edit, or expand upon predefined checks.
+
+You can also enhance the accuracy of the AI’s analysis by including various types of additional context relevant to your project's content.
+
+After configuration, you can assign a QA Check prompt as the default for either your entire organization or individual projects.
+
+### Applying AI QA Check in Projects
+
+To enable AI QA Check in your projects, follow these steps:
+
+<Steps>
+  1. [Create and enable a QA Check prompt](#configuring-ai-prompts).
+  2. Set it as the default QA prompt in the project's **Settings > AI > Settings**.
+  3. Enable the **AI-powered check** in the project's **Settings > QA Checks**.
+</Steps>
+
+Once set, the AI continuously checks submitted translations, ensuring consistent compliance with your project's quality guidelines.
 
 ## See Also
 

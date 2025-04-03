@@ -9,6 +9,7 @@ sidebar:
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 import { Steps, Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import Include from '~/components/Include.astro';
 import ReadMore from '~/components/ReadMore.astro';
 import KBD from '~/components/KBD.astro';
 import sbsEditor from '!/crowdin/online-editor/sbs_editor.png';
@@ -37,6 +38,7 @@ import multilingualModeGrid from '!/crowdin/online-editor/multilingual_mode_grid
 import rtlLanguages from '!/crowdin/online-editor/rtl.png';
 import commandPalette from '!/crowdin/online-editor/command_palette.png';
 import quickAccessToMenuTabs from '!/enterprise/online-editor/quick_access.png';
+import translationProgressIndicators from '!/crowdin/online-editor/translation_progress_indicators.png';
 import searchTmTab from '!/crowdin/online-editor/search_tm_tab.png';
 import replaceInSuggestionsResults from '!/crowdin/online-editor/replace_in_suggestions_results.png';
 import replaceInSourcesResults from '!/crowdin/online-editor/replace_in_sources_results.png';
@@ -259,11 +261,25 @@ You might also get automatic Quality Assurance (QA) check pop-up messages to avo
 
 Clicking <Icon name="mdi:dots-vertical" class="inline-icon" /> in the upper-right allows you to:
 
-* *Copy String URL* to access a specific string using its unique link or share it with colleagues.
-* *Copy Source Skeleton* to copy untranslatable elements to the translation section. Useful when translating strings with ICU message syntax and strings with HTML tags.
-* *Clear Selected Input* to clear the translation field for the selected string.
-* Access *Translation History* to see all the modifications done to the string.
-* *View String In Context* to display a string along with other strings surrounding it in the source file, which gives a better understanding of how the string should be translated.
+* **Remove My Approvals/All Approvals** &ndash; Remove the approvals for a translation, reverting its status to unapproved. (Available for proofreaders or higher.)
+* **Remove Translation** &ndash; Clear translations for the selected strings along with the associated TM records. Duplicate translations from master strings remain unaffected.
+* **Hide/Make Visible** &ndash; Toggle the visibility of a string for translators. Hidden strings are accessible only to project managers or higher.
+* **Pre-translate** &ndash; Initiate [pre-translation](#pre-translation-in-the-editor) directly in the Editor using Translation Memory (TM), Machine Translation (MT), or AI.
+* **Copy String URL** &ndash; Access a specific string using its unique link or share it with colleagues.
+* **Copy Source Skeleton** &ndash; Copy untranslatable elements to the translation section. Useful when translating strings with ICU message syntax or HTML tags.
+* **Clear Selected Input** &ndash; Clear the translation field for the selected string.
+* **Translation History** &ndash; View all the modifications made to the string.
+* **View String In Context** &ndash; Display the string along with other strings surrounding it in the source file, helping you understand its context better.
+* **Labels** &ndash; Add or manage labels assigned to the string, helping to categorize or identify it for specific purposes.
+* **Max. Length** &ndash; View and edit the maximum character length allowed for the string translation. Clicking this option opens a modal with the following settings:
+  * **Proportional to source texts** &ndash; Set the maximum length as a percentage of the source text length. Use the slider or manually enter a percentage (e.g., 100%, 150%, 200%) to define the limit.
+  * **Fixed max. length** &ndash; Specify an absolute character limit for the string translation.
+  * **Unlimited** &ndash; Allow translations of any length without restrictions.
+* **Delete String** &ndash; Permanently remove the string from the project. (Available to project members with manager permissions or higher.)
+
+<Aside type="caution" title="Permissions">
+  Some of the string menu options may be available only to project members with manager permissions (or higher).
+</Aside>
 
 In the translation window, you will also see the *Maximum length of translation* limit if it’s exceeded.
 
@@ -309,36 +325,15 @@ Within the **Context & Translations** section, you can find the context for each
 
 Using the *Comments* section, you can discuss the meaning of the source string or other related questions. It is recommended to use a source language of the project so other translators can understand it. Use "@" and a username to direct your message to the specific person.
 
+You can also use this section to report problems with source strings or translations, ask questions, or request additional context.
+
 <Image src={commentNew} alt="Comment" />
 
-#### Reporting Issues
-
-Additionally, in the *Comments* section, you can report the issues regarding the source strings or translations to the project managers by selecting the *Issue* checkbox.
-
-Available issue types:
-
-* General question &ndash; General question related to the source string or its translations.
-* Current translation is wrong &ndash; The translation added to the source string is incorrect and requires correction.
-* Lack of contextual information &ndash; The meaning of the string isn't clear and requires additional clarification.
-* Mistake in the source string &ndash; The source string text contains typos or any other mistakes.
-
-All strings with unresolved issues could be filtered using the With Unresolved Issues options.
-
-<ReadMore>
-  Read more about [Filtering Strings](#filtering-strings).
-</ReadMore>
-
-<Image src={commentWithIssue} alt="Issue" />
-
-Issues are reported to the project managers to correct mistakes or add context and resolve the issues. You can also *Edit*, *Resolve*, or *Delete* your issue by hovering over it.
-
-<Image src={issueOptions} alt="Issue options" />
-
-If the project owner or managers configured the integration with Jira, all reported issues will be directed to the Jira dashboard for further processing and resolution without the need to visit Crowdin Enterprise Editor.
-
-<ReadMore>
-  Read more about [Jira Integration](/enterprise/jira-integration/).
-</ReadMore>
+<LinkCard
+  title="Issues"
+  description="Learn how to report and manage translation issues in the Editor."
+  href="/enterprise/issues/"
+/>
 
 #### Exchanging Comments with External Organizations
 
@@ -404,7 +399,18 @@ Some terms may already have translations, which help maintain consistency across
 
 ### File Context
 
-*File Context* section can contain additional context or instructions for translators to better understand how to translate a particular file. File context can be added in the [File Settings](/enterprise/file-management/#file-context) as plain text or Markdown by either an owner or a project manager.
+The *File Context* section allows you to provide translators with additional details to help them understand how to translate a specific file. File context can be added as plain text or Markdown, either directly in the Editor or through the [File Settings](/enterprise/file-management/#file-context) by the project members with manager permissions (or higher). For other project members, file context is read-only.
+
+To add file context in the Editor, follow these steps:
+
+<Steps>
+  1. Click **Add File Context** in the File Context section.
+  1. Add the context or instructions for your translators. You can use either plain text or Markdown.
+  1. *(Optional)* Click **Preview** to see how the text will appear after saving.
+  1. Click **Save**.
+</Steps>
+
+To edit file context, click the existing text in the File Context section, make your changes, and click **Save**.
 
 <Image src={fileContext} alt="File context" />
 
@@ -414,8 +420,8 @@ The Editor offers several viewing modes to accommodate different translation wor
 
 You can switch between Editor modes using the following methods:
 
-- **Via Main menu**: Click on the **Main menu** <Icon name="mdi:menu" class="inline-icon" /> in the upper-left corner, select **View**, and choose the preferred mode.
-- **Via Editor View icon**: Click the **Editor View** icon in the upper-right corner and choose the preferred mode.
+- **Via Main menu** &ndash; click on the **Main menu** <Icon name="mdi:menu" class="inline-icon" /> in the upper-left corner, select **View**, and choose the preferred mode.
+- **Via Editor View icon** &ndash; click the **Editor View** icon in the upper-right corner and choose the preferred mode.
 
 ### Side-by-Side Mode
 
@@ -513,7 +519,7 @@ The Editor settings are grouped into tabs that contain various options for confi
 ### General
 
 - *Translation Memory Suggestions* &ndash; you can specify the minimum similarity match (in percentages) for translation memory suggestions shown under the translation field.
-- *QA checks* &ndash; if enabled, the pop-up messages with warnings will appear each time you try to save a translation with some inaccuracy (punctuation/tags/spaces mismatch, missing variables, etc.)
+- *QA issues* &ndash; if enabled, the pop-up messages with warnings will appear each time you try to save a translation with some inaccuracy (punctuation/tags/spaces mismatch, missing variables, etc.)
   <Image src={qaPopUp} alt="QA pop-up" />
 - *Auto-complete* &ndash; if enabled, the pop-up with translation prediction and automatic translation completion will appear while you type the translation.
 - *Auto-approve* &ndash; if enabled, the translations added by proofreaders or members with higher permissions are automatically approved.
@@ -542,13 +548,13 @@ The AI tab allows to configure custom prompts and shortcuts for AI Assistant. Th
   ```
 - *Non-printable characters displaying* &ndash; if enabled, non-printable characters (e.g., space, tab character, line break, etc.) will be displayed in source texts and translations.
 - *Translation field highlighting* &ndash; if enabled, words with potential QA issues will be underlined in the translation field.
-- *Real time spellcheck displaying* &ndash; instantly view spelling issues as you type a translation. <Icon name="mdi:spellcheck" class="inline-icon" /> displayed next to the translation means that no spelling issues were found. Otherwise, you'll see a red label with the number of spelling issues detected. Click it for more details.
+- *Real-Time Spellcheck* &ndash; instantly view spelling issues as you type a translation. <Icon name="mdi:spellcheck" class="inline-icon" /> displayed next to the translation means that no spelling issues were found. Otherwise, you'll see a red label with the number of spelling issues detected. Click it for more details.
 - *UI Language* &ndash; select your preferred language for the Crowdin Enterprise UI. The chosen language will be applied to the Editor and other parts of Crowdin Enterprise.
 
 <Aside type="caution">
-  Currently, the *Real time spellcheck displaying* feature is available for specific languages only.
+  Currently, the *Real-Time Spellcheck* feature is available for specific languages only.
   <details>
-    Afrikaans; Akan; Aragonese; Arabic; Arabic, Saudi Arabia; Azerbaijani; Belarusian; Bulgarian; Bengali; Tibetan; Breton; Bosnian; Catalan; Czech; Welsh; Danish; German; German, Austria; German, Switzerland; Greek; English, Australia; English, Canada; English, United Kingdom; English, New Zealand; English; English, United States; English, South Africa; Spanish, Argentina; Spanish, Bolivia; Spanish, Chile; Spanish, Colombia; Spanish, Costa Rica; Spanish, Dominican Republic; Spanish, Ecuador; Spanish; Spanish, Guatemala; Spanish, Honduras; Spanish, Mexico; Spanish, Nicaragua; Spanish, Panama; Spanish, Peru; Spanish, Puerto Rico; Spanish, Paraguay; Spanish, El Salvador; Spanish, Uruguay; Spanish, Venezuela; Estonian; Basque; Persian; Faroese; French; Frisian; Irish; Scottish Gaelic; Galician; Gujarati; Hausa; Hebrew; Hindi; Croatian; Upper Sorbian; Hungarian; Armenian; Indonesian; Icelandic; Italian; Kazakh; Korean; Kurdish; Luxembourgish; Lingala; Lao; Lithuanian; Latvian; Malagasy; Maori; Marathi; Malay; Maltese; Norwegian Bokmal; Nepali; Dutch; Norwegian Nynorsk; Norwegian; Occitan; Polish; Portuguese, Brazilian; Portuguese; Romanian; Russian; Sanskrit; Serbo-Croatian; Sinhala; Slovak; Slovenian; Albanian; Serbian; Serbian, Latin; Swedish, Finland; Swedish; Swahili; Swahili, Tanzania; Tamil; Tajik; Thai; Turkish; Ukrainian; Vietnamese; Finnish; Asturian; Chinese, Simplified; Esperanto; Japanese; Khmer; Tagalog
+    <Include file="spellcheck-supported-languages.mdx" />
   </details>
 
   For Crowdin Enterprise, this list also includes custom spellcheck languages if there are any custom spellchecks installed in the organization.
@@ -582,17 +588,40 @@ Use keyboard shortcuts to take actions in the editor quickly. Check the list of 
 
 Easy access to most-used menu items in one click:
 
+- *Project* &ndash; click on the current project name (*Impact* in the below screenshot)
 - *Language* &ndash; click on the current language (*French* in the below screenshot)
 - *Files* &ndash; click on the current file name (*impact.xml* in the below screenshot)
 - *Editor Mode* (only in projects with a workflow) &ndash; click on the current step (*Translate* in the below screenshot)
 
 <Image src={quickAccessToMenuTabs} alt="Quick Access to Menu Sections" />
 
-### Useful Options for Source Words
+### Translation Progress Indicators
 
-To check Translation Memory suggestions for a particular word or phrase, select it in the source string and choose *Search TM* from the menu. You can also search for a word or phrase explanation in project terminology and Wikipedia.
+Use translation and approval indicators to monitor the progress of the currently opened file or folder. These indicators display the proportion of content that is translated and approved, allowing you to quickly assess the current status.
 
-<Aside type="caution">
+There are two types of indicators available in the Editor:
+
+* **Circular Progress Indicators** – Located in the upper-right corner of the toolbar, these show the percentage of translated and approved content for the file or folder you're working on.
+* **Detailed Progress Breakdown** – Accessible via the **Main menu > File**, this provides information on the total word count, number of translated, pre-translated, and approved words, along with percentage completion for each.
+
+<Image src={translationProgressIndicators} alt="Translation Progress Indicators" />
+
+<Aside type="tip">
+  Translation and approval progress updates automatically every 2 minutes. To refresh progress manually, click the circular progress indicators in the upper-right corner. This also refreshes the progress displayed in **Main menu > File**.
+</Aside>
+
+### Context Menu Options for Selected Words
+
+When you select a word or phrase in the source string or translation, the <Icon name="mdi:lightbulb" class="inline-icon" /> icon will appear. Clicking the icon opens a context menu with several useful options:
+
+* **Search TM** &ndash; Look for Translation Memory (TM) suggestions for the selected word or phrase.
+* **Search in Terminology and Wikipedia** &ndash; Find an explanation of the selected word or phrase in the project terminology or Wikipedia.
+* **Create Term** &ndash; Add the selected word or phrase to the project glossary as a new term.
+* **Transform** (only available for selected words in the translation) &ndash; Access a submenu with options to convert the selected text to lowercase or uppercase.
+* **Copy** &ndash; Copy the selected word or phrase to clipboard.
+* **Copy & Paste** &ndash; Copy the selected word or phrase and immediately paste it into the translation field.
+
+<Aside type="caution" title="Permissions">
   The *Create Term* option is available for project managers only.
 </Aside>
 
@@ -656,6 +685,54 @@ To replace source texts, follow these steps:
   9. In the lower-left corner, click the drop-down menu and select the preferred behavior for the translations of the source strings to be replaced. You can choose between *Keep Translations*, *Remove Approvals*, or *Delete Translations*.
   10. Select the source strings you want to replace and click **Replace Selected** to finish.
 </Steps>
+
+### Pre-translation in the Editor
+
+The **Pre-translation** feature in the Editor allows you to apply translations to multiple strings directly within the Editor using Translation Memory (TM), Machine Translation (MT), or AI. This feature is available to project members with language coordinator permissions or higher.
+
+To apply Pre-translation in the Editor, follow these steps:
+
+<Steps>
+  1. You can apply pre-translation in the Editor in two ways:
+      * **Main menu** &ndash; click on the Main menu <Icon name="mdi:menu" class="inline-icon" /> in the upper-left corner, go to **File** and select the preferred pre-translation method.
+      * **String menu** (available in **Side-by-Side** and **Multilingual** modes) &ndash; click <Icon name="mdi:dots-vertical" class="inline-icon" /> in the upper-right and select the preferred pre-translation method.
+  2. Configure the following pre-translation parameters:
+      * **Scope** – select which strings to apply pre-translation to:
+        * **Selected strings** (Specific to **Side-by-Side** and **Multilingual** modes) – applies only to strings manually selected in the Editor.
+        * **Filtered strings** – applies to all strings matching the current filter.
+        * **File** – applies to the currently opened file.
+        * **All files** – applies to all strings across all files in the project, regardless of the file currently open in the Editor.
+      * **Apply to untranslated strings only** – when selected, pre-translation will only be applied to strings that don’t have any translations.
+      * **Allow duplicate translations** – adds translations even if they duplicate existing ones. Useful when comparing AI prompts or MT engines in the [Pre-translation Accuracy](/enterprise/project-reports/#pre-translation-accuracy) report, as it ensures that all translations are registered as new and included in accuracy calculations.
+        <Aside>
+          **Apply to untranslated strings only** and **Allow duplicate translations** are mutually exclusive. Only one of them can be selected at a time.
+        </Aside>
+      * **Minimum match ratio** (Specific to pre-translation via TM) - select either **100%** or **Perfect match (101%)** as the minimum similarity required for TM matches.
+        <ReadMore>
+          Read more about [TM Match Types](/enterprise/translation-memory/#tm-match-calculation).
+        </ReadMore>
+      * **Skip approved translations** (Specific to pre-translation via TM and MT) – prevents overwriting strings that already have approved translations.
+      * **Approve added translations** (Specific to pre-translation via TM) – allows you to auto-approve translations added through pre-translation. Options include:
+        * **All** – approve all added translations.
+        * **With perfect match** – approve only those with a 101% match.
+        * **With perfect match (approved previously)** – approve perfect matches only if they were already approved before.
+        * **All (skip auto-substituted translations)** – approve everything except translations improved by auto-substitution.
+      * **Translation engine** (Specific to pre-translation via MT) – select the machine translation engine to use.
+      * **AI prompt** (Specific to pre-translation via AI) – select the prompt that will guide the AI model’s behavior during pre-translation.
+  3. Click **Pre-Translation**.
+</Steps>
+
+In Side-by-side and Comfortable modes, pre-translation is applied to the single language currently selected in the Editor. In Multilingual mode, translations are applied across all selected languages, as this mode allows working with multiple languages simultaneously.
+
+<ReadMore>
+  Read more about [Multilingual mode](#multilingual-mode).
+</ReadMore>
+
+Use the **Queue** option in the String menu to track and manage all triggered pre-translation instances.
+
+<ReadMore>
+  Read more about [Pre-translation Queue](/enterprise/pre-translation/#pre-translation-queue).
+</ReadMore>
 
 ### Advanced Filter
 

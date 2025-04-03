@@ -369,3 +369,44 @@ Furthermore, the Crowdin for Figma plugin seamlessly integrates with Figma for V
 <ReadMore>
   Read more about [Figma for VS Code](https://help.figma.com/hc/en-us/articles/15023121296151-Figma-for-VS-Code).
 </ReadMore>
+
+## Troubleshooting
+
+### Screenshot Generation Issues in Large Figma Files
+
+When uploading strings with screenshots from large Figma files, users may experience slow performance or Figma freezing. This issue occurs when text elements are placed within a large top-level frame.
+
+When you add a string from Figma to Crowdin Enterprise, the plugin:
+
+1. Identifies the top-level frame containing the text element.
+2. Converts this frame into an image using the Figma API.
+3. Uploads the image to Crowdin Enterprise as a screenshot.
+
+The plugin always searches for the highest-level frame in the hierarchy and stops when encountering a non-frame element (such as a section or group). If the top-level frame is too large, generating a screenshot can cause performance issues.
+
+For example:
+
+- `section` > `group` > **`frame`** > `text` → The plugin captures the screenshot from `frame`.
+- **`frame 1`** > `frame 2` > `frame 3` > `text` → The plugin captures the screenshot from `frame 1`.
+
+To prevent slowdowns, restructure your Figma file so that top-level frames contain only the relevant UI context. Instead of placing all UI elements in a single large frame, break them into smaller, logical sections.
+
+### Font Replacement When Linking Strings
+
+When working in Figma, fonts that are missing locally may cause unexpected changes after linking strings using the Crowdin for Figma plugin.
+
+This situation typically happens when:
+
+* The original design uses a font that is not installed in your local Figma environment.
+* Figma marks missing fonts with a special **A?** icon shown in the upper-left corner of the canvas and next to the font name in the **Typography** section of the right sidebar.
+* When you select a text element with a missing font, Figma displays a **Missing font** dialog offering to replace it.
+
+If you link a Crowdin string to such a text element, Figma will automatically substitute the missing font with a default available font (e.g., Roboto). This is expected behavior. The plugin attempts to preserve the original font, but when it’s not available in your local system, Figma replaces it to ensure the text remains visible and editable.
+
+This issue may not be immediately noticeable. Some users detect the font change only after uploading screenshots from Figma to Crowdin Enterprise, which can cause confusion.
+
+To avoid this:
+
+* Check for missing font indicators (**A?**) before linking strings.
+* Make sure the fonts used in the original design are installed and available in your Figma.
+* If necessary, coordinate with the designer to confirm the correct font setup.
