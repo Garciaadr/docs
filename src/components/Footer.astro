@@ -2,11 +2,11 @@
 import Default from '@astrojs/starlight/components/Footer.astro';
 import Feedback from '~/components/Feedback.astro';
 
-const isHomepage = Astro.props.slug === '';
+const isHomepage = Astro.locals.starlightRoute.id === '';
 const year = new Date().getFullYear();
 
 const showFeedback = !isHomepage &&
-    !['404', 'iframe/privacy-policy', 'iframe/terms'].includes(Astro.props.slug);
+    !['404', 'iframe/privacy-policy', 'iframe/terms'].includes(Astro.locals.starlightRoute.id);
 ---
 
 <style>
@@ -30,11 +30,12 @@ const showFeedback = !isHomepage &&
                 <a class="no-underline" href="/privacy-policy/">Privacy Policy</a>
                 <a class="no-underline" href="/cookies/">Cookies Statement</a>
                 <a class="no-underline" href="https://crowdin.com/page/security">Security</a>
+                <a class="no-underline" href="/llms.txt">Docs for LLMs</a>
             </div>
         </div>
     </footer>
     ) : (
-        <Default {...Astro.props as any}><slot /></Default>
+        <Default><slot /></Default>
     )
 }
 

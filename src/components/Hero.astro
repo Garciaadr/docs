@@ -1,14 +1,12 @@
 ---
-import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/Hero.astro';
 import Search from '@astrojs/starlight/components/Search.astro';
 import { LinkButton } from '@astrojs/starlight/components';
 import { Image } from 'astro:assets';
 
-const isHomepage = Astro.props.slug === '';
+const isHomepage = Astro.locals.starlightRoute.id === '';
 
-const { data } = Astro.props.entry;
-
+const { data } = Astro.locals.starlightRoute.entry;
 const { title, tagline, image, actions } = data.hero || {};
 
 const imageAttrs = {
@@ -112,7 +110,7 @@ if (image) {
                         />
                     )
                 }
-                {lightImage && <Image src={lightImage} {...imageAttrs} class="w-6/12 xl:w-full max-w-full h-auto dark:sl-hidden" />}
+                {lightImage && <Image src={lightImage} {...imageAttrs} class="w-6/12 md:w-full lg:w-8/12 xl:w-full max-w-full h-auto dark:sl-hidden self-center" />}
             </div>
             <div class="col-span-12 md:col-span-6 xl:col-span-7 flex flex-col self-center">
                 <h1 class="mb-0 text-center md:text-left" data-page-title set:html={title} />
@@ -145,6 +143,6 @@ if (image) {
         </div>
     </section>
     ) : (
-        <Default {...Astro.props as any}><slot /></Default>
+        <Default><slot /></Default>
     )
 }

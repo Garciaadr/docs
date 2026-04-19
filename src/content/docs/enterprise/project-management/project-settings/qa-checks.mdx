@@ -3,7 +3,7 @@ title: Quality Assurance Settings
 description: Configure QA checks to ensure the quality of translations
 slug: enterprise/project-settings/qa-checks
 sidebar:
-  order: 3
+  order: 4
   label: Quality Assurance
 ---
 
@@ -52,6 +52,8 @@ Once enabled, QA checks will work in the background and scan the translations fo
 ## Spell Checker Ignore List
 
 If your project contains some uncommon words that are not recognized by the Spell checker, you can add them to the Ignore list to exclude them from being checked.
+
+This is useful for project-specific terminology, like brand names or proper nouns (e.g., `MyApp`), which you might expect not to be flagged as errors. Since the Spell checker and Glossary are separate features, adding terms to the Glossary does not automatically add them to the Spellcheck ignore list. Adding them here is the correct way to prevent them from being flagged.
 
 <Image src={qaChecksAddToIgnoreList} alt="QA Checks Add to Ignore list" />
 
@@ -145,3 +147,5 @@ In the opened window you can see the list of words added to the ignore list. You
 <ReadMore>
   Read more about [Configuring AI-powered check](/enterprise/crowdin-ai/#setting-up-ai-qa-check).
 </ReadMore>
+
+**Outdated translation** &ndash; flags translations that may need to be revised after their corresponding source strings have been modified.

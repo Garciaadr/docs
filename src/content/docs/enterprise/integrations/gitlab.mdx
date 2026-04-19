@@ -13,8 +13,8 @@ import ReadMore from '~/components/ReadMore.astro';
 import QuestionAnswer from '~/components/QuestionAnswer.astro';
 import setUpIntegrationDropdown from '!/enterprise/integrations/set_up_integration_dropdown.png';
 import authorization from '!/crowdin/integrations/gitlab_integration_authorization.png';
-import unconfigured from '!/crowdin/integrations/integration_unconfigured.png';
-import unconfiguredSb from '!/crowdin/integrations/integration_unconfigured_sb.png';
+import unconfigured from '!/enterprise/integrations/integration_unconfigured.png';
+import unconfiguredSb from '!/enterprise/integrations/integration_unconfigured_sb.png';
 import syncNow from '!/enterprise/integrations/integration_sync_now.png';
 
 The GitLab integration allows you to synchronize files between your GitLab repo and Crowdin Enterprise project.
@@ -86,7 +86,7 @@ When working with GitLab integration in the **Target File Bundles Mode**, the in
 When you work with private integrations (e.g., integrations with self-hosted VCS), you need to add dedicated Crowdin IP addresses to the allowlist to ensure that it operates properly while staying secure.
 
 <ReadMore>
-  Read more about [IP Addresses](/developer/ip-addresses/#integrations).
+  Read more about [IP Addresses](/developer/ip-addresses/#integrations-and-applications).
 </ReadMore>
 
 ### Service Branches
@@ -94,6 +94,10 @@ When you work with private integrations (e.g., integrations with self-hosted VCS
 When translations are finished and your languages are ready to go live, Crowdin Enterprise sends the merge request with translations to your version control system. For every branch that is under localization, Crowdin Enterprise creates an additional service branch with translations. We don't commit directly to the master branch so that you can verify translations first.
 
 By default, `l10n_` is added to the created service branch name. If necessary, you can easily change it.
+
+<Aside type="tip">
+  We recommend deleting the `l10n_` branch from your repository after merging the merge request to prevent potential conflicts. Crowdin Enterprise will automatically recreate the service branch when new translations are ready to be synced.
+</Aside>
 
 ### Synchronization Settings
 
@@ -111,6 +115,15 @@ To import existing translations from your repo, select one of the following opti
 * **Always import new translations from the repository**
 
 By default, the first option is selected to import translations only once. Alternatively, you can clear both options if you don’t want to import translations from your repo.
+
+<Aside type="tip">
+  We recommend importing existing translations from the repository only once during the integration setup. Afterward, treat Crowdin Enterprise as the source of truth and manage translations exclusively in Crowdin Enterprise to prevent overriding unapproved translations.
+</Aside>
+
+Click **Upload translations options** to access the following additional options:
+
+* **Allow target translation to match source**
+* **Approve added translations**
 
 #### Push Sources
 
@@ -206,7 +219,9 @@ Alternatively, if you need to sync only one branch separately, click <Icon name=
 By default, the translations stored on the repo are uploaded to Crowdin Enterprise during the first synchronization only. To upload translations to Crowdin Enterprise manually, click <Icon name="mdi:dots-vertical" class="inline-icon" /> icon next to the **Sync Now** button, and click **Sync Translations to Crowdin Enterprise**. The integration will upload existing translations to your Crowdin Enterprise project.
 
 <Aside type="caution" title="Limitations">
-  The *Sync Translations to Crowdin Enterprise* option is available for file-based projects only.
+  * The **Sync Translations to Crowdin Enterprise** option is available for file-based projects only.
+  * Use this feature with caution if translation is already in progress.<br/>
+  Manually uploading translations from the repo may override unapproved translations currently in the project, similar to the [**Always import new translations from the repository**](#import-existing-translations) option.
 </Aside>
 
 ## Q&A

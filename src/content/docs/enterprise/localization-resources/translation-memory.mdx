@@ -26,7 +26,9 @@ import fuzzyMatches from '!/crowdin/localization-resources/tm_fuzzy_matches.png'
 import autoSubstitutionSuggestion from '!/crowdin/localization-resources/tm_auto_substitution_suggestion.png';
 import penalizedSuggestion from '!/crowdin/localization-resources/tm_penalized_suggestion.png';
 
-A Translation Memory (TM) is a database that stores translation units, which are segments of source text paired with their corresponding translations in different languages. It improves and speeds up the translation process by providing suggestions for identical or similar strings in your projects. A project TM is created automatically for each Crowdin Enterprise project, and each translation made within the project is automatically added to this TM.
+A Translation Memory (TM) is a database that stores translation units, which are segments of source text paired with their corresponding translations in different languages. It improves and speeds up the translation process by providing suggestions for identical or similar strings in your projects.
+
+A project TM is created automatically for each Crowdin Enterprise project. By default, each translation made within the project is automatically added to the project’s TM. This behavior can be customized in the [project settings](/enterprise/project-settings/translation-memories/) to save only approved translations.
 
 <Aside>
   Translations made between identical languages won't be added to TM (e.g., from the English source language to the English target language).
@@ -95,12 +97,12 @@ On the Translation Units page, you can view TM content grouped as translation un
 
 On the Segments page, you can view TM content as individual segments (one segment per row) with the following details:
 
-* Segment &ndash; contains either source or target language text.
-* Language &ndash; specifies the language of the segment.
-* Usage count &ndash; specifies the number of times a segment has been used.
-* Created &ndash; specifies the date of the segment creation.
-* Last modified &ndash; specifies the date of the last modification of the segment.
-* Author &ndash; specifies the user who created the segment.
+* Segment &ndash; Contains either source or target language text.
+* Language &ndash; The segment's language (e.g., French, Spanish).
+* Usage count &ndash; Specifies the number of times a segment has been used.
+* Created &ndash; The date the segment was first added to the TM.
+* Last modified &ndash; The most recent date the segment was edited.
+* Author &ndash; The user who added the segment to the TM.
 
 <Image src={segmentsView} alt="Segments View" />
 
@@ -129,7 +131,7 @@ To edit a translation unit, follow these steps:
   1. Open your organization's **Workspace** and select **Translation memories** on the left sidebar. Alternatively, open your project and go to **Settings > Translation memories**.
   2. Click on the needed TM. Alternatively, click **All Records** to view translation units of all available TMs in one list.
   3. Hover over a translation unit and click <Icon name="mdi:pencil" class="inline-icon" /> to open it.
-  4. In the appeared dialog, edit or delete the segments of the needed languages.
+  4. In the appeared dialog, edit or delete the segments of the needed languages. For each segment, you can see additional details like the language, creation date, update date, and, if available, the name of the contributor who originally submitted the translation.
   5. Click **Save**. <Image src={editTranslationUnitDialog} alt="Edit Translation Unit Dialog" class="width-xl" />
 </Steps>
 
@@ -254,9 +256,9 @@ Additional TM attributes provided by translation memory downloaded in TMX format
 
 - `x-crowdin-metadata` &ndash; String identifier hash.
 - `creationid` &ndash; Translation author's full name and username in Crowdin Enterprise.
-- `creationdate` &ndash; Translation creation date.
+- `creationdate` &ndash; The date the translation was originally created.
 - `changeid` &ndash; Full name and username of the person who updated a translation.
-- `changedate` &ndash; Translation update date.
+- `changedate` &ndash; The date the translation was last updated.
 - `usagecount` &ndash; Translation suggestion's number of usages in Crowdin Enterprise.
 - `lastusagedate` &ndash; The last date a translation suggestion was used in Crowdin Enterprise.
 

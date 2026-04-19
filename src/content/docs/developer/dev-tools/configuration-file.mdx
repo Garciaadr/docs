@@ -142,7 +142,7 @@ Matches any character in the file or directory name. If you specify `*.json`, it
 
 **\*\*** (doubled asterisk)
 
-Matches any string recursively (including subdirectories). Note that you can use `**` in both the source and translation patterns. When you use `**` in the translation pattern, it always includes a sub-path from the source for a given file. For example, you can use source: `/en/**/*.po` to recursively upload all `*.po` files to Crowdin Enterprise. The translation pattern will be `/%two_letters_code%/**/%original_file_name%`.
+Matches any string recursively (including subdirectories). Note that you can use `**` in both the source and translation patterns. When you use `**` in the translation pattern, it always includes a sub-path from the source for a given file. For example, you can use source: `/en/**/*.po` to recursively upload all `*.po` files to Crowdin. The translation pattern will be `/%two_letters_code%/**/%original_file_name%`.
 
 ---
 
@@ -236,9 +236,9 @@ Example 2. Usage of wildcards for ignoring files:
 
 ## Renaming Translations File
 
-If you need to rename a file with translations after the export, you can easily do this with the help of the parameter `translation_replace`.
+If you need to rename a file with translations or replace parts of the path after export, you can use the `translation_replace` parameter.
 
-For example, if the file is named `strings_en.po`, it can be renamed to `strings.po`. For this, add a new parameter (at the same level as the translation parameter) to the configuration file:
+For example, if the file is named `strings_en.po`, it can be renamed to `strings.po`, or you can replace folder names in the translation path:
 
 ```yml title="crowdin.yml"
 "files": [
@@ -246,13 +246,15 @@ For example, if the file is named `strings_en.po`, it can be renamed to `strings
     "source": "/locale/**/*_en.po",
     "translation": "/locale/**/%original_file_name%_%two_letters_code%",
     "translation_replace": {
-      "_en": ""
+      "_en": "",
+      "de/locale": "de/lokalisierung",
+      "fr/locale": "fr/paramètres"
     }
   }
 ]
 ```
 
-In this case, `_en` will be erased from the file name.
+In this case, `_en` will be erased from the file name, and the folder names `de/locale` and `fr/locale` will be replaced with `de/lokalisierung` and `fr/paramètres` respectively.
 
 ## Ignoring Files and Directories
 
@@ -300,6 +302,17 @@ Configuration file example:
 ]
 ```
 
+## Export Languages
+
+By default, all the languages are exported. If you need to export some specific languages, use the `export_languages` parameter to specify them.
+
+```yml title="crowdin.yml"
+"export_languages": [
+  "uk",
+  "ja"
+]
+```
+
 ## Multilingual Spreadsheet
 
 If a CSV or XLS/XLSX file contains the translations for all target languages, you should specify appropriate language codes in the scheme.
@@ -307,7 +320,7 @@ If a CSV or XLS/XLSX file contains the translations for all target languages, yo
 CSV file example:
 
 ```csv
-identifier,source_phrase,context,Ukrainian,Russian,French
+identifier,source_phrase,context,Ukrainian,Spanish (Mexico),French
 ident1,Source 1,Context 1,,,
 ident2,Source 2,Context 2,,,
 ident3,Source 3,Context 3,,,
@@ -321,7 +334,7 @@ Configuration file example:
     "source": "multicolumn.csv",
     "translation": "multicolumn.csv",
     "first_line_contains_header": true,
-    "scheme": "identifier,source_phrase,context,uk,ru,fr"
+    "scheme": "identifier,source_phrase,context,uk,es-MX,fr"
   }
 ]
 ```
@@ -329,7 +342,7 @@ Configuration file example:
 If your CSV or XLS/XLSX file contains columns that should be skipped on import, use `none` for such columns in the scheme, for example:
 
 ```yml title="crowdin.yml"
-"scheme" : "identifier,source_phrase,context,uk,none,ru,none,fr"
+"scheme" : "identifier,source_phrase,context,uk,none,es-MX,none,fr"
 ```
 
 ##### Scheme Constants
@@ -657,17 +670,6 @@ To replace the default commit message, use the `append_commit_message` parameter
 "append_commit_message": false
 ```
 
-### Export Languages
-
-By default, all the languages are exported. If you need to export some specific languages, use the `export_languages` parameter to specify them.
-
-```yml title="crowdin.yml"
-"export_languages": [
-  "uk",
-  "ja"
-]
-```
-
 ### Pull Request Assignee
 
 If you need to assign a pull request to particular users, use the `pull_request_assignees` parameter to specify them.
@@ -787,8 +789,8 @@ Let's say your locale directories are named `en`, `uk`, `fr`, `de`. All of them 
 
 To make it work with Crowdin without changes in your project, you can set up Language Mapping via UI.
 
-- [Language mapping in Crowdin](/project-settings/export/)
-- [Language mapping in Crowdin Enterprise](/enterprise/project-settings/export/)
+- [Language mapping in Crowdin](/project-settings/languages/#adding-custom-language-codes)
+- [Language mapping in Crowdin Enterprise](/enterprise/project-settings/languages/#language-mapping)
 
 ## Using One Configuration File for VCS Integrations and CLI
 

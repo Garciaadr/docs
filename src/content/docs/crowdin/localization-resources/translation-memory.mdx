@@ -27,7 +27,9 @@ import fuzzyMatches from '!/crowdin/localization-resources/tm_fuzzy_matches.png'
 import autoSubstitutionSuggestion from '!/crowdin/localization-resources/tm_auto_substitution_suggestion.png';
 import penalizedSuggestion from '!/crowdin/localization-resources/tm_penalized_suggestion.png';
 
-A Translation Memory (TM) is a database that stores translation units, which are segments of source text paired with their corresponding translations in different languages. It improves and speeds up the translation process by providing suggestions for identical or similar strings in your projects. A project TM is created automatically for each Crowdin project, and each translation made within the project is automatically added to this TM.
+A Translation Memory (TM) is a database that stores translation units, which are segments of source text paired with their corresponding translations in different languages. It improves and speeds up the translation process by providing suggestions for identical or similar strings in your projects.
+
+A project TM is created automatically for each Crowdin project. By default, each translation made within the project is automatically added to the project’s TM. This behavior can be customized in the [project settings](/project-settings/translation-memories/) to save only approved translations.
 
 <Aside>
   Translations made between identical languages won't be added to TM (e.g., from the English source language to the English target language).
@@ -40,7 +42,7 @@ In addition to the project TMs that are automatically created with each project,
 To create a TM, follow these steps:
 
 <Steps>
-  1. Open your profile home page and select **Translation Memories** on the left sidebar.
+  1. Open your profile home page and select **TM** on the left sidebar.
   2. Click **Create TM**. <Image src={createTm} alt="Create TM" />
   3. In the appeared dialog, name your TM and select a default language that will be displayed first in the table of translation units.
   4. *(Optional)* Assign the TM to the needed projects. You can skip this step and assign a TM later.
@@ -78,7 +80,7 @@ You can create translation units from scratch, edit and delete existing translat
 To create a translation unit, follow these steps:
 
 <Steps>
-  1. Open your profile home page and select **Translation Memories** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
+  1. Open your profile home page and select **TM** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
   2. Select the needed TM and click **View Records**.
   3. Click **Add Translation Unit**. <Image src={addTranslationUnit} alt="Add Translation Unit" />
   4. In the appeared dialog, select the language from the drop-down menu and type the translation of the segment.
@@ -96,12 +98,12 @@ On the Translation Units page, you can view TM content grouped as translation un
 
 On the Segments page, you can view TM content as individual segments (one segment per row) with the following details:
 
-* Segment &ndash; contains either source or target language text.
-* Language &ndash; specifies the language of the segment.
-* Usage count &ndash; specifies the number of times a segment has been used.
-* Created &ndash; specifies the date of the segment creation.
-* Last modified &ndash; specifies the date of the last modification of the segment.
-* Author &ndash; specifies the user who created the segment.
+* Segment &ndash; Contains either source or target language text.
+* Language &ndash; The segment's language (e.g., French, Spanish).
+* Usage count &ndash; Specifies the number of times a segment has been used.
+* Created &ndash; The date the segment was first added to the TM.
+* Last modified &ndash; The most recent date the segment was edited.
+* Author &ndash; The user who added the segment to the TM.
 
 <Image src={segmentsView} alt="Segments View" />
 
@@ -127,10 +129,10 @@ You can edit both the source and translation parts of the existing translation u
 To edit a translation unit, follow these steps:
 
 <Steps>
-  1. Open your profile home page and select **Translation Memories** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
+  1. Open your profile home page and select **TM** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
   2. Select the needed TM and click **View Records**. Alternatively, click **All Records** to view translation units of all available TMs in one list. <Image src={editTranslationUnits} alt="Edit Translation Units" />
   3. Open a translation unit with a double-click or click **Edit**.
-  4. In the appeared dialog, edit or delete the segments of the needed languages.
+  4. In the appeared dialog, edit or delete the segments of the needed languages. For each segment, you can see additional details like the language, creation date, last modified date, and, if available, the name of the contributor who originally submitted the translation.
   5. Click **Save**. <Image src={editTranslationUnitDialog} alt="Edit Translation Unit Dialog" class="width-xl crowdin-modal" />
 </Steps>
 
@@ -164,7 +166,7 @@ You can easily find and replace translations in segments within a selected TM us
 To replace current translations with the new ones, follow these steps:
 
 <Steps>
-  1. Open your profile home page and select **Translation Memories** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
+  1. Open your profile home page and select **TM** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
   2. Select the needed TM and click **View Records**.
   3. Click <Icon name="mdi:find-replace" class="inline-icon" />.
   4. In the appeared dialog, select the language in which you want to search. *(Optional)* Use filters if necessary.
@@ -213,7 +215,7 @@ When dealing with the removal of translation units and translations, there could
 To download or upload TMs, follow these steps:
 
 <Steps>
-  1. Open your profile home page and select **Translation Memories** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
+  1. Open your profile home page and select **TM** on the left sidebar. Alternatively, open your project and go to **Settings > Translation Memories**.
   2. Click **View Records** on the needed TM.
   3. Click <Icon name="mdi:swap-vertical" class="inline-icon" /> and select **Download** or **Upload**. <Image src={downloadUpload} alt="Downloading and Uploading TM" />
 </Steps>
@@ -255,9 +257,9 @@ Additional TM attributes provided by translation memory downloaded in TMX format
 
 - `x-crowdin-metadata` &ndash; String identifier hash.
 - `creationid` &ndash; Translation author's full name and username in Crowdin.
-- `creationdate` &ndash; Translation creation date.
+- `creationdate` &ndash; The date the translation was originally created.
 - `changeid` &ndash; Full name and username of the person who updated a translation.
-- `changedate` &ndash; Translation update date.
+- `changedate` &ndash; The date the translation was last updated.
 - `usagecount` &ndash; Translation suggestion's number of usages in Crowdin.
 - `lastusagedate` &ndash; The last date a translation suggestion was used in Crowdin.
 
@@ -270,7 +272,7 @@ Using the shared TMs, you can pre-translate any of the projects you own. Also, T
 To share TMs between all of the projects you own, follow these steps:
 
 <Steps>
-  1. Open your profile home page and select **Translation Memories** on the left sidebar.
+  1. Open your profile home page and select **TM** on the left sidebar.
   2. Select **Share TMs**. <Image src={sharingTm} alt="Sharing TMs" />
 </Steps>
 

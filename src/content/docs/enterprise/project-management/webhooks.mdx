@@ -16,7 +16,7 @@ import webhooksLog from '!/enterprise/project-management/webhooks_log.png';
 Webhooks notify and help you collect information about the key events that happen in your Crowdin Enterprise project, like completed translations or proofreading. After you configure a webhook, Crowdin Enterprise will start sending POST or GET requests with data to the webhook URL via HTTP.
 
 <Aside title="Permissions">
-  To manage webhooks in a project, you must have the Admin, Group/Project Manager, or Developer role. See [Inviting People](/enterprise/inviting-people/) for more information.
+  To manage webhooks in a project, you must have the Admin, Group/Project Manager, or Developer / Translation Requestor role. See [Inviting People](/enterprise/inviting-people/) for more information.
 </Aside>
 
 ## Use Cases
@@ -50,7 +50,7 @@ You will need to provide the following information to register a webhook:
 
 * The webhook name (for example, "New translation added").
 * The events to post to the URL. You can select either one event or a specific set of events.
-* The URL where the callback should be sent.
+* The URL to which the webhook callbacks are sent as direct requests. Redirects are not supported and will result in a failed delivery. The endpoint must return a `2XX` response within **30 seconds**.
 * The request method that indicates the desired action to be performed for a given resource (use either GET or POST).
 * The content type for the POST request method (`multipart/form-data`, `application/json`, or `application/x-www-form-urlencoded`).
   * For the `application/json` content type, you can select **Batch webhooks** to merge multiple events into a single request.

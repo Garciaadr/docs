@@ -8,6 +8,7 @@ import { Steps, Aside, LinkCard, CardGrid } from '@astrojs/starlight/components'
 import ReadMore from '~/components/ReadMore.astro';
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
+import { YouTube } from 'astro-embed';
 import translatorsWorkspace from '!/enterprise/getting-started/translators_workspace.png';
 import openProject from '!/enterprise/getting-started/translators_open_project.png';
 import sourceFiles from '!/enterprise/getting-started/translators_source_files.png';
@@ -17,7 +18,9 @@ import volunteerEditorMenu from '!/crowdin/getting-started/volunteer_editor_menu
 
 > Crowdin is a localization management platform that helps companies translate their software. In this article, you will find information on how you can contribute to localization projects as a translator.
 
-You've been invited to join the Crowdin Enterprise project, but not sure where to start? Here's everything you need to get started with translating and proofreading. This article will walk you through the basics of the translation process in Crowdin Enterprise.
+You've been invited to join the Crowdin Enterprise project, but not sure where to start? Here's everything you need to get started with translating and proofreading. This article, along with the quick video demo below, will walk you through the basics of the translation process in Crowdin Enterprise.
+
+<YouTube id="rmlI3QtpAbA" />
 
 ## Create an Account
 
@@ -57,7 +60,7 @@ Go to **Account Settings > Notifications** to change your notification preferenc
 
 * **Tasks** &ndash; a list of tasks assigned to you. Use the filter for better navigation and archive the completed tasks.
 
-* **Store** &ndash; Crowdin Store offers 600+ apps you can install to extend Crowdin functionality. Explore Crowdin [apps for Translator Productivity](https://store.crowdin.com/categories/translator-productivity).
+* **Store** &ndash; Crowdin Store offers 700+ apps and integrations you can install to extend Crowdin functionality. Explore Crowdin [apps for Translator Productivity](https://store.crowdin.com/categories/translator-productivity).
 
 <CardGrid>
   <LinkCard
@@ -107,6 +110,24 @@ To request a language, follow these steps:
 The project managers will review your request and determine whether the language can be added.
 
 If another user has already submitted a request for the same language, you will receive a notification about the existing request. This notification will also appear if you submit multiple requests for the same language while the first request is still under review by the managers.
+
+### Contacting a Project Manager
+
+If you have questions about the project's content, need clarification on a specific task, or would like to be promoted to a proofreader role, you can contact the project manager. You might also reach out if you need additional resources, have feedback on translations, want to discuss project timelines, etc.
+
+To contact the project manager, open the project and click **Contact** next to their name in the **Details** section.
+
+You will be redirected to the [**Messages**](/enterprise/messages/) page with the project manager pre-selected as the recipient. If needed, you can also add other users to the conversation. Enter and send your message, and the conversation will be created, allowing you to begin communicating. You will be notified when the manager replies, and the discussion will continue in the same thread.
+
+### Intellectual Property Rights
+
+Before contributing translations to a project, it’s important to understand the intellectual property terms. Projects may define how your translations will be used, shared, or licensed.
+
+If you're contributing to open-source or community-driven projects, check if the project provides additional legal or licensing terms. When in doubt, contact the project manager for clarification.
+
+<ReadMore>
+  Read more about [Intellectual Property Rights](/intellectual-rights-for-translations/).
+</ReadMore>
 
 ### Reporting a Project
 
@@ -160,14 +181,23 @@ The **String List** is your primary workspace for managing translations.
 
 Pop-up messages may appear to alert you to potential issues, such as inconsistent punctuation, mismatched spaces, or missing variables. These checks help maintain translation quality.
 
-#### String Details
+#### AI in the Editor
 
-The context of the string is displayed in the *String details* section in the right panel. Typically, this can include descriptions and screenshots. You can request context from here if needed.
+AI in the Editor helps you work faster and more accurately with context-aware translation suggestions.
 
-#### Suggestions and Translations
+To use AI suggestions, open the **Context & Translations** section in the right sidebar of the Editor.
 
-This section contains all the resources and previous translations that might be useful:
+For chat-based assistance, ask your organization admin to install and configure the [Crowdin Copilot app](https://store.crowdin.com/crowdin-copilot) from the Crowdin Store.
 
+<Aside>
+  If AI features are not displayed in the Editor, Crowdin AI may not be configured for the project yet. Contact the project owner for details.
+</Aside>
+
+#### Context and Translations
+
+This section contains the resources that might be useful:
+
+* Context, labels, screenshots, and additional information to guide the work.
 * Translations by other project members
 * Translation Memory (TM) suggestions
 * Machine Translation (MT) suggestions
@@ -181,11 +211,11 @@ If you see that there is already a correct suggestion, vote for it by clicking t
 
 #### Comments
 
-In the *Comments* section, you can discuss the meaning of the source string or other related questions with other project members. Use "@" and a username to mention the specific person or create an issue related to the string.
+In the *Comments* section, you can discuss the meaning of the source string or other related questions with other project members. Use "@" and a username to mention the specific person or [create an issue](/enterprise/issues/#for-translators) related to the string.
 
 ### Main Menu
 
-The Main menu <Icon name="mdi:menu" class="inline-icon" /> in the upper-left corner allows you to switch between files for translation, change translation languages, contact a manager, and configure the Editor view.
+Using the main menu at the top of the Editor (**File**, **Edit**, **View**, **Language**, **Project**, **Help**), you can select content for translation, download or upload translations, perform various string actions, change the Editor's layout, switch target languages, access project pages and switch projects, access help materials, and more.
 
 <Image src={volunteerEditorMenu} alt="Main Menu" />
 

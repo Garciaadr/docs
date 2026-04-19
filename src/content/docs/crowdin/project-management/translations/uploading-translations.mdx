@@ -6,7 +6,7 @@ sidebar:
   order: 1
 ---
 
-import { Aside, LinkCard, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+import { Aside, CardGrid, LinkCard, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 import uploadTranslations from '!/crowdin/project-management/translations/upload_translations.png';
@@ -15,6 +15,7 @@ import uploadTranslationsConfigure from '!/crowdin/project-management/translatio
 import uploadTranslationsLanguagePage from '!/crowdin/project-management/translations/upload_translations_language_page.png';
 import uploadTranslationsXliff from '!/crowdin/project-management/translations/upload_translations_xliff.png';
 import uploadTranslationsEditorMenu from '!/crowdin/project-management/translations/upload_translations_editor_menu.png';
+import uploadTranslationsEditorGrid from '!/crowdin/translation-process/download_upload_grid.png';
 
 If you have existing translations ready to integrate into your Crowdin project, you can upload them directly.
 
@@ -78,12 +79,11 @@ To upload translations to your project, follow these steps:
 
 ## Uploading Translations via Editor
 
-To upload a file with translations via [Online Editor](/online-editor/), follow these steps:
+To upload a file with translations via [Online Editor](/online-editor/), go to **File** in the main menu, and select **Upload Translations**.
 
-<Steps>
-  1. Click on the Main menu <Icon name="mdi:menu" class="inline-icon" /> in the upper-left corner.
-  1. Go to **File > Upload Translations**. <Image src={uploadTranslationsEditorMenu} alt="Upload Translations in Editor" />
-</Steps>
+<Image src={uploadTranslationsEditorMenu} alt="Upload Translations in Editor" />
+
+If you are in the [Multilingual (Grid)](/online-editor/#multilingual-mode-grid) mode of the Editor, click the drop-down arrow next to a target language’s column and select **Upload Translations**. <Image src={uploadTranslationsEditorGrid} alt="Upload Translations from the Multilingual (Grid) mode" />
 
 ## Uploading XLIFF Translations
 
@@ -116,20 +116,43 @@ To achieve the best results, we recommend uploading translation files with the s
 
 Currently, this feature is available for the following languages (not depending on the language pair combination): Arabic, Chinese Simplified, Chinese Traditional, English, French, German, Italian, Japanese, Korean, Dutch, Polish, Portuguese, Portuguese Brazilian, Spanish, Thai, Turkish, and Russian.
 
-<LinkCard
-  title="Try Document Aligner application"
-  description="Translation alignment, facilitated by the app, allows you to upload existing translations of non-key-value documents to Crowdin or create an editable XLSX Translation Memory."
-  href="https://store.crowdin.com/aligner"
-  target="_blank"
-/>
+<CardGrid>
+  <LinkCard
+    title="Translation Alignment (AI)"
+    description="Use this AI-powered app to automatically align translations as you upload them. It intelligently matches source and target texts, even in complex files (e.g., DOCX, PDF) where the string order differs."
+    href="https://store.crowdin.com/translation-alignment"
+    target="_blank"
+  />
+  <LinkCard
+    title="Document Aligner"
+    description="Use this app to align your source and translated file and create an editable XLSX Translation Memory for further use in Crowdin."
+    href="https://store.crowdin.com/aligner"
+    target="_blank"
+  />
+</CardGrid>
 
 ## Upload Summary
 
-After uploading a translation file, a summary will appear showing the result of the import. Depending on the file content and your project settings, you may see one of the following outcomes:
+After uploading a translation file, an initial summary appears showing the basic import statistics (e.g., Imported, Approved, Skipped).
 
-* **All translations imported** – All translations were uploaded without issues. If the **Approve added translations** option was enabled, the translations were also marked as approved.
-* **Partially imported** – Some translations were imported, while others were skipped due to reasons such as failed QA checks, hidden strings, or being identical to the source text. The summary lists the reasons for the skipped translations based on the QA Checks configured in [**Settings > QA Checks**](/project-settings/qa-checks/#qa-check-parameters).
-* **All translations skipped** – None of the translations were imported. The summary lists the reasons, such as failed QA checks, hidden strings, or being identical to the source text.
-* **No translations imported** – No translations were imported or skipped with a specific reason. This typically happens when the **Approve added translations** option is enabled, QA warnings are ignored, and the file contains only translations that are already present in the project. Since duplicates are not uploaded, the summary shows *No translations imported*.
+Depending on where you upload the file, this initial summary will look slightly different:
+* **From the Translations tab:** A pop-up notification will appear with a **View Detailed Report** button.
+* **From a language page or the Editor:** A dialog window will appear with **Close**, **View Detailed Report**, and **Reload** buttons. Click **Reload** to update the translation progress displayed on the page.
 
-To update progress after the upload, click **Reload** in the summary dialog.
+### Detailed Report (Import Translations Statistic)
+
+From the initial summary, click **View Detailed Report** to open the **Import Translations Statistic** dialog. This report provides a full breakdown of the import and is organized into three clickable tabs at the top:
+
+* **Translations added**
+* **Translations approved**
+* **Translations skipped**
+
+You can click on each tab to view details for the affected files and languages.
+
+The **Translations skipped** tab provides a categorized breakdown of all translations that were not imported. Common reasons for skipped translations include:
+
+* **Translation equals source** – The translation was identical to the source text.
+* **Hidden strings** – The translations were for strings that are currently hidden in the project.
+* **QA check** – The translation failed one or more quality assurance checks. The report will show a sub-list of the specific QA issue types (e.g., *Duplicate translation*, *Numbers mismatch*, etc.) based on the QA checks configured in [**Settings > QA Checks**](/project-settings/qa-checks/#qa-check-parameters).
+
+For advanced troubleshooting, click the **Service Logs** link in the top-right corner of the **Import Translations Statistic** dialog. This will redirect you to the **Upload translations Log Details** page (located in **Tools > Service Logs**), which displays the technical details of the import, including a message, date/time, and details in JSON format.

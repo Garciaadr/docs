@@ -5,7 +5,7 @@ slug: enterprise/for-managers
 ---
 
 import { Image } from 'astro:assets';
-import { Steps, LinkCard } from '@astrojs/starlight/components';
+import { Steps, CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
 import { Icon } from 'astro-icon/components';
 import ReadMore from '~/components/ReadMore.astro';
 import createProject from '!/enterprise/project-management/create_project.png';
@@ -13,6 +13,8 @@ import uploadFiles from '!/enterprise/project-management/sources/upload_files.pn
 import screenshotsListInProjectSettings from '!/enterprise/project-management/screenshots_list_in_project_settings.png';
 import userManagementAddUsers from '!/enterprise/team-management/user_management_add_users.png';
 import createWorkflow from '!/enterprise/organization-management/workflow_create_button.png';
+import reportsTab from '!/enterprise/reports/project_reports_tab.png';
+import reportsOrg from '!/enterprise/reports/organization_reports.png';
 import globalSearch from '!/enterprise/getting-started/global_search.png';
 
 > Crowdin Enterprise is a cloud-based solution for streamlined localization management. Our technology solution allows you to localize your software, games, documentation, and other products.
@@ -69,7 +71,7 @@ To automatically sync files between your Crowdin Enterprise project and the tool
 
 <LinkCard
   title="Crowdin Store"
-  description="Explore 600+ integrations to streamline your localization process."
+  description="Explore 700+ apps and integrations to streamline your localization process."
   href="https://store.crowdin.com/"
   target="_blank"
 />
@@ -84,7 +86,7 @@ If you already have some translations done outside Crowdin Enterprise, you can u
 
 ### Upload Localization Resources
 
-All resources, including TMs, Glossaries, and MT engines, can be added to your Workspace or directly to the project. Resources added to Workspace are available to all projects within your organization. Each project also has a default Translation Memory and Glossary that are created automatically.
+All resources, including TMs, Glossaries, Style Guides, and MT engines, can be added to your Workspace or directly to the project. Resources added to Workspace are available to all projects within your organization. Each project also has a default Translation Memory and Glossary that are created automatically.
 
 You can also switch to **Permission granularity mode**, where you can add different resources to each group as well. Resources added to a group will be available only to the projects in this group.
 
@@ -114,22 +116,43 @@ Project Glossary is created automatically for each project. You can also upload 
 
 ### Upload Screenshots
 
-Provide additional context to the uploaded source files by adding screenshots. Tag source strings to the screenshots so they are displayed in the Editor, where translators will see them in the context section.
+Screenshots are another great way to provide additional context so translators can understand better how they should translate the source strings. To upload screenshots, open your project and go to the **Screenshots** section. Tag the source strings on the screenshots. This way, screenshots with tagged strings will appear under each string in the Editor's Context and Translations section.
+
+<Image src={screenshotsListInProjectSettings} alt="Screenshots" />
 
 <ReadMore>
   Read more about [Screenshots](/enterprise/screenshots/).
 </ReadMore>
 
-<Image src={screenshotsListInProjectSettings} alt="Screenshots" />
+<CardGrid>
+  <LinkCard
+    title="Context features in Crowdin"
+    description="No Context, No Quality. Give Translators Context to Get Better Translations."
+    href="https://crowdin.com/blog/2019/11/05/no-context-no-quality-give-translators-context-to-get-better-translations"
+    target="_blank"
+  />
+  <LinkCard
+    title="Translate Your UI with Crowdin's Screen Translation Feature"
+    description="Crowdin's Screen Translation simplifies UI localization by allowing users to translate interface elements with a real-time preview of your app design."
+    href="https://crowdin.com/translate-ui-with-crowdin"
+    target="_blank"
+  />
+  <LinkCard
+    title="Crowdin Context Harvester CLI"
+    description="Use Crowdin's AI-powered CLI tool to automatically extract deep, code-aware context. It analyzes how strings are used in your code to help deliver more accurate translations."
+    href="https://store.crowdin.com/crowdin-context-harvester-cli"
+    target="_blank"
+  />
+</CardGrid>
 
-### Machine Translation Engines
+## Pre-translate Your Project
 
-Machine Translation is a great assistance for human translators. Work goes faster with translators post-editing translations suggested by machine.
+To save time, you can pre-translate your Crowdin Enterprise project using [AI](/enterprise/crowdin-ai/), [Translation Memory](/enterprise/translation-memory/), or [Machine Translation](/enterprise/machine-translation/). Pre-translating your content means some strings will already be translated before translators begin their work.
 
-You can currently connect Google Translate and AutoML Translation, Microsoft Translator, DeepL Pro, and Amazon Translate engines.
+You can apply pre-translation manually or set up automatic pre-translation through the project workflow. [Projects without a workflow](/enterprise/creating-project/#projects-without-a-workflow) support manual pre-translation only.
 
 <ReadMore>
-  Read more about [Machine Translation](/enterprise/machine-translation/).
+  Read more about [Pre-translation](/enterprise/pre-translation/).
 </ReadMore>
 
 ## Invite People
@@ -194,83 +217,186 @@ To create a workflow template in your Workspace, open your organization's **Work
   Read more about [Workflows](/enterprise/workflows/).
 </ReadMore>
 
+## Managing Language Requests
+
+Project members can request new target languages for a project directly from project's **Dashboard** page by clicking **Request New Language**. As a project manager, you will receive these requests as notifications, which you can then review and add a new language if needed.
+
+To manage these requests effectively, you first need to ensure your notifications are correctly configured.
+
+### Enabling Notifications for Requests
+
+To receive alerts when a user requests a language, you must have the appropriate notifications enabled in your **Account Settings**.
+
+<Steps>
+  1. Go to **Account Settings > Notifications**.
+  2. Select **Language Requests** for your preferred notification channels (e.g., In-app, Email, Slack).
+</Steps>
+
+<Aside type="tip">
+  For timely reviews, consider enabling notifications for channels you check frequently, such as email or Slack.
+</Aside>
+
+### Reviewing a Language Request
+
+Once a user requests a new language, you will be notified.
+
+<Steps>
+  1. Click the bell icon <Icon name="mdi:bell" class="inline-icon" /> in the upper-right corner to see new notifications in a dropdown list.
+  2. For a complete list of all notifications, click **Show all**. Alternatively, open your organization's **Workspace** and select **Notifications** on the left sidebar.
+  3. On the **Notifications** page, find the request. The notification will show the project, the requested language, the user who sent the request, and any comments they provided.
+  4. Click **Language Settings** to go directly to the project’s **Settings > Languages** page to add the requested language to the project.
+</Steps>
+
+## Generate Reports
+
+Crowdin Enterprise provides project-level, group-level and organization-level reports to help you track progress, evaluate translation accuracy, estimate and count costs, and measure contributor activity. To access them, open the **Reports** section from the project, group, or organization view.
+
+The reports available to you depend on your [manager role](/enterprise/roles/#manager):
+
+* Project Managers – can view reports for their assigned projects.
+* Group Managers – can view reports for projects and groups they manage.
+* Workspace Managers – can view reports across the organization, including project, group, and organization-level reports.
+
+Available project-level reports include:
+
+* Overview
+* Cost Estimate
+* Translation Cost
+* Pre-translation Accuracy
+* Translator Accuracy
+* Top Members
+* Archive
+
+<Image src={reportsTab} alt="Project Reports" />
+
+Available group-level and organization-level reports include:
+
+* Overview
+* Translation Cost
+* Top Members
+* Archive
+
+<Image src={reportsOrg} alt="Organization Reports" />
+
+<ReadMore>
+  Read more about [Project Reports](/enterprise/project-reports/) and [Organization Reports](/enterprise/organization-reports/).
+</ReadMore>
+
+## Download Translations
+
+You can download translations manually using the web interface (UI) or set up automated delivery using integrations (e.g., GitHub or other connected tools), the Crowdin Enterprise API, the console client (CLI), or CDN Distributions.
+
+Translations are downloaded according to the export settings configured in the project's **Settings** section.
+
+<ReadMore>
+  Read more about [Downloading Translations](/enterprise/downloading-translations/).
+</ReadMore>
+
 ## Global Search
 
 The Global Search feature enables you to locate content and resources across your entire organization efficiently. You can access Global Search from most pages in your Workspace, within projects (excluding the Editor), and other sections.
 
-Search results are displayed based on the role of the user performing the search. For example, a translator will only see resources assigned to them, such as source strings or projects, while an organization admin can access all resources they have permissions for across the organization.
-
-Recent search requests are stored so you can reuse or clear them as needed.
+Search results are displayed based on the role of the user performing the search. For example, a translator will only see resources assigned to them, while an organization admin can access all resources they have permissions for across the organization.
 
 <Image src={globalSearch} alt="Global Search" />
 
 ### Using Global Search
 
+The Global Search opens in a dedicated page that allows for quick lookups and granular filtering.
+
 To search for content and resources within your organization, follow these steps:
 
 <Steps>
   1. Click <Icon name="mdi:magnify" class="inline-icon" /> in the upper-right corner of the Workspace or project page.
-  2. Enter keywords or phrases in the search bar.
-  3. You will be redirected to the Global Search results page automatically.
-  4. Switch between the tabs to view results categorized by different content types.
-  5. Click **Exit Search** to return to your Workspace.
+  2. You will be redirected to the Global Search page automatically.
+  3. Enter your keywords or phrases in the search bar.
+  4. Switch between the tabs on the left sidebar to view results categorized by different content types.
+  5. (Optional) Customize your search scope using the [available filters](#filtering-results).
+  6. Click <Icon name="mdi:arrow-left" class="inline-icon" /> to return to your Workspace.
 </Steps>
 
-### Global Search Tabs
+### Global Search Categories
 
-Search results are organized into tabs for better navigation, with the number of matches displayed next to each tab name. For easier navigation, matching terms in the results are highlighted in bold.
-
-To change the sort order of results within a tab, click the desired column header. Click once for ascending order and twice for descending order.
+The search results are categorized to help you navigate different types of content. You can switch between these categories using the left sidebar on the results page. For easier navigation, matching terms in the results are highlighted in bold. For the [Source strings](#source-strings), [Translations](#translations), and [Files](#files) categories, results are grouped by project. The project name header displays the total number of matches found within that specific project.
 
 #### Source Strings
 
-Search for source text across multiple projects. In the **Source Strings** tab, you can view results with the following details:
+Search for source text, identifiers (keys), or context across projects. The results provide the following details:
 
-* String &ndash; The source text containing the match.
-* Context &ndash; Context of the source string.
-* Project &ndash; Name of the project where the string is located.
-* Location &ndash; File or folder structure within the project where the string is stored.
+* **Identifier (Key)**: The unique string identifier assigned by developers.
+* **String**: The source text containing the match.
+* **Context**: Context information provided for the source string.
+* **Labels**: Labels attached to the string for organization.
+* **Location**: The file path or folder structure where the string is stored.
 
-Click on a source string to open it in the Editor in a new browser tab or click the project name to navigate to the project Dashboard.
+#### Translations
 
-Filters available in this tab:
+Search for target language translations to find specific terminology usage across different languages. The results provide the following details:
 
-* Search all &ndash; Search within all available fields.
-* Search in source text &ndash; Limit the search to source text only.
-* Search in source context &ndash; Limit the search to the source string's context.
-
-#### Groups and Projects
-
-Find organization groups or specific projects. The **Groups and Projects** tab is divided into two sections: Groups and Projects.
-
-Each section displays a list of matching search results with the following details:
-
-* Name &ndash; Name of the project or group.
-* Updated &ndash; Last update timestamp of the project or group.
+* **Identifier (Key)**: The unique key of the string.
+* **Source string**: The original source text.
+* **Context**: Context information for the string.
+* **Translation**: The translated text matching your query.
+* **Language**: The target language of the translation.
+* **Labels**: Labels attached to the string.
+* **Location**: The file path where the string is stored.
 
 #### Files
 
-Locate files by name or type within your projects. In the **Files** tab, you can view search results the following details:
+Locate specific files by name within your projects. The results provide the following details:
 
-* File &ndash; The file name containing the match.
-* Location &ndash; File or folder structure within the project.
-* Project &ndash; Name of the project where the file is stored.
-
-Click on a file to open it in the Editor in a new browser tab or click the project name to go to the project Dashboard.
+* **File**: The name of the file.
+* **Title**: The title of the file (if applicable).
+* **Location**: The folder structure within the project.
+* **Words**: The total word count of the file.
+* **Last modified**: The date the file was last updated.
 
 #### Translation Memories
 
-Search for specific translation memories. In the **Translation Memories** tab, you can view search results with the following details:
+To search within your Translation Memories, click **Translation Memories** in the left sidebar. This action opens the **All Records > Translation Units** page in a new browser tab.
 
-* Name &ndash; Name of the translation memory.
-* Records &ndash; Number of entries in the translation memory.
+The search query you entered in Global Search is automatically carried over and applied to the **Search** field on the All Records page, displaying only the matching translation units.
+
+<ReadMore>
+  Read more about [Viewing and Filtering Translation Units and Segments](/enterprise/translation-memory/#viewing-and-filtering-translation-units-and-segments).
+</ReadMore>
 
 #### Glossaries
 
-Search for specific glossaries. In the **Glossaries** tab, you can view search results with the following details:
+To search for glossary terms, click **Glossaries** in the left sidebar. This action opens the **All Records > Concepts** page in a new browser tab.
 
-* Name &ndash; Name of the glossary.
-* Terms &ndash; Number of terms in the glossary.
+Similar to Translation Memories, your search query is automatically applied to the **Search** field on the All Records page, allowing you to view matching concepts immediately.
+
+<ReadMore>
+  Read more about [Viewing, Searching, and Filtering Glossary Concepts and Terms](/enterprise/glossary/#viewing-searching-and-filtering-glossary-concepts-and-terms).
+</ReadMore>
+
+### Filtering Results
+
+To narrow down your search results, you can apply specific filters depending on the category you are viewing:
+
+* **Search in** (Specific to **Source strings**): Choose the specific context for your search query.
+  * **All fields**: Search across all available data types.
+  * **Source text**: Search only within the source strings.
+  * **Source key**: Search for specific string identifiers (keys).
+  * **Source context**: Search within the context descriptions of strings.
+* **Projects**: Limit your search to specific projects or search across **All** projects in your organization.
+* **Languages** (Specific to **Translations**): Filter the results to show translations only for specific target languages.
+
+### Interacting with Search Results
+
+Once you have located the desired content, you can interact with the results in the following ways:
+
+* **Open Project**: Click the **Project Name** header to navigate directly to that project's Dashboard.
+* **Open Editor (Specific String)**: Click on a **Source String** or **Translation** text to open the Editor focused specifically on that string.
+* **Open Editor (All Strings)**: In the **Translations** tab, click **View all** next to the project name to open the Editor filtered to show all strings with translation matches for your query.
+* **Open File**: Click the **File** name to open the file in the Editor or click **View all** next to the project name to open the file manager filtered to show all files with file name matches for your query.
+
+### Recent Searches
+
+The Global Search panel stores your recent queries in the **Recent Searches** section at the bottom of the left sidebar, allowing you to quickly re-run previous searches.
+
+Each entry displays the search query, the time elapsed, and a category icon (e.g., <Icon name="mdi:code-tags" class="inline-icon" /> for Source strings) indicating the type of content searched. You can click any entry to immediately perform the search again. To manage your history, use the arrow icon (<Icon name="mdi:chevron-up" class="inline-icon" />) to collapse the list or click the **Clear all** icon (<Icon name="mdi:notification-clear-all" class="inline-icon" />) to remove all entries.
 
 ## Personalized Demo
 

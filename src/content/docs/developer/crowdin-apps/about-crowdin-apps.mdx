@@ -10,22 +10,23 @@ tableOfContents: false
 
 import { Image } from 'astro:assets';
 import { LinkCard, CardGrid, Card, Aside } from '@astrojs/starlight/components';
+import { YouTube } from 'astro-embed';
 import ReadMore from '~/components/ReadMore.astro';
 import HelpBanner from '~/components/HelpBanner.astro';
 import developerHero from '~/assets/images/developer-portal-hero.png';
 import integratingCrowdinApps from '~/assets/images/integrating-crowdin-apps.svg';
 
-<Image src={developerHero} alt="Crowdin Developer" class="absolute top-0 right-0 -z-50 no-shadow !w-6/12 xl:!w-4/12 md:!max-w-[480px] xl:!max-w-[1020px] invisible lg:visible opacity-80" />
+<Image src={developerHero} alt="Crowdin Developer" class="absolute top-4 right-0 -z-50 no-shadow !w-6/12 xl:!w-4/12 md:!max-w-[480px] xl:!max-w-[1020px] invisible lg:visible opacity-80" />
 
 <div class="mx-auto text-center">
   <div class="rounded-lg bg-gray-100 dark:bg-gray-700 p-12">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
       <div class="text-center !mt-0">
-        <p class="text-4xl sm:text-5xl font-bold mb-2">2.6M+</p>
+        <p class="text-4xl sm:text-5xl font-bold mb-2">3M+</p>
         <p class="text-lg sm:text-base mb-6 sm:mb-0">Registered users</p>
       </div>
       <div class="text-center !mt-0">
-        <p class="text-4xl sm:text-5xl font-bold mb-2">184k+</p>
+        <p class="text-4xl sm:text-5xl font-bold mb-2">250k+</p>
         <p class="text-lg sm:text-base mb-6 sm:mb-0">Projects</p>
       </div>
       <div class="text-center !mt-0">
@@ -118,6 +119,4 @@ Our team is ready to help you with the technical implementation of your app. Onc
 
 ## Case Study
 
-<div style="margin-top: 1.5rem; position: relative; width: 100%; height: 0; padding-bottom: 56.25%; box-shadow: 0 5px 20px rgb(0 0 0 / 10%); border-radius: 6px;overflow:hidden;">
-  <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" height="100%" width="100%" src="https://www.youtube.com/embed/V1tS-GeriIA" allow="autoplay; encrypted-media" />
-</div>
+<YouTube id="V1tS-GeriIA" />

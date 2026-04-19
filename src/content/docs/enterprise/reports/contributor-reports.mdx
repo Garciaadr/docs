@@ -17,40 +17,56 @@ import myActivityGenerating from '!/enterprise/reports/contributor_reports_my_ac
 import addMtMatchType from '!/enterprise/reports/reports_add_mt_match_type.png';
 import addCustomRatesMyActivity from '!/enterprise/reports/contributor_reports_my_activity_add_custom_rates.png';
 import topMembersSorted from '!/enterprise/reports/reports_top_members_sorted.png';
+import archiveViewing from '!/enterprise/reports/project_reports_archive_viewing.png';
 
-As a translator or a proofreader, you can estimate and count the price of your contribution to the project and view your position in the Top Members list. You can also view the progress of the project and track your contributions over a specific period of time. For this, open the project and select **Reports** on the left sidebar.
+As a translator or a proofreader, you can estimate and count the price of your contribution to the project and view your position in the Top Members list. You can also view the progress of the project and track contributions over a specific period of time. For this, open the project and select **Reports** on the left sidebar.
 
 <Image src={reportsTab} alt="Reports Tab" />
 
-## Project Reports
+## Project Overview
 
-You can analyze the project data with the following reports:
+Use this section to get a summary of the project's volume and monitor translation and proofreading activities over selected time periods. In the upper-right corner, you can select a report unit (*words*, *strings*, *characters*, or *characters with spaces*) that will apply to all reports in this section. The comparisons shown in percentage are counted by comparing the chosen period of time to the same previous period of time (e.g., if you select a month, the current month is compared to the previous one).
 
-- [Project size](#project-size)
-- [Project summary](#project-summary)
+To download reports for further analysis or record-keeping, click **Export** and select the preferred format (CSV, XLSX, or JSON).
 
-### Project Size
+In the reports that feature interactive graphs, you can hover over data points for more detailed information, such as daily or monthly totals for each category.
 
-You can find the total number of texts in the project under the *Project Size*. You can also see the numbers of such texts:
-- *Translatable* &ndash; for translation
-- *Hidden* &ndash; not for translation (visible only for managers)
-- *Duplicates* &ndash; repeating within the project
+The top of the page displays the primary statistics for the project's volume:
 
-This report might be generated based on the following parameters: words, strings, characters, and characters with spaces.
+* *Translatable*: The total amount of text available for translation.
+* *Hidden*: The total amount of text in hidden strings.
+* *Total*: The total amount of text in the project (*Translatable* + *Hidden*).
+* *Translation to*: The number of target languages in the project.
 
-### Project Summary
+Below the main statistics, the **Overview** section contains the following report:
 
-The Project Summary section provides a comprehensive visual analysis of the project's translation progress using the following graphs: Translation activity and Proofreading activity.
+### Activity Summary
 
-You can use this report to compare your contribution to overall project activity.
+This report tracks the overall translation and proofreading activity in the project. You can filter the data by **Date Range** and **Language**. The report is split into two main parts: **Translation** and **Proofreading**.
 
-There are five periods available: Last week, Last 30 days, Last 24 hours, Last year, and Custom range. The graphs are generated based on the text unit type selected for the **Project Size** section.
+Each part displays the total work completed during the selected period with a percentage comparison to the previous period. You can expand the **Breakdown by Language** section in each part to view a table of the same metrics broken down by target language.
 
-* **Translation activity:** displays the volume of translated units (words, strings, characters) over time. It displays multiple lines simultaneously - units translated by human translators, units translated by Translation Memory (TM), units translated by Machine Translation (MT), and units translated by AI. By hovering over the data points, you can view daily or monthly totals for each category.
+<Aside>
+  The Activity Summary shows information about all the translations made in the project (including duplicate translations made by the same translator, removed translations, etc.).
+</Aside>
 
-* **Proofreading activity:** displays the approval and voting activities within your project. It shows two lines - approved units and vote quantities, allowing you to see how review activity is trending over time. By hovering over the data points, you can view the daily or monthly number of approved texts and votes.
+#### Translation
 
-Each graph allows you to focus on specific data by hovering over elements for more detailed information or by adjusting display settings to highlight or hide certain parameters.
+This section shows the volume of translated text, broken down by the following key metrics:
+
+* *Total (end of period)*
+* *Human Translation*
+* *Translation Memory*
+* *Machine Translation*
+* *AI*
+
+The **Translation** graph below the metrics displays multiple lines simultaneously for each translation type. By hovering over the data points, you can view daily or monthly totals for each category.
+
+#### Proofreading
+
+This section shows the volume of approved text and voting activity. The main metric displayed is *Approved* words.
+
+The **Proofreading** graph visualizes the approval and voting activity over time, showing two distinct lines: *Approved Words* and *Votes*. By hovering over the data points, you can view the daily or monthly totals for both approved texts and votes cast.
 
 ## Cost Estimate
 
@@ -86,6 +102,23 @@ To generate the Cost Estimate report, follow these steps:
 <Aside>
   Rates are automatically saved after you click *Generate*.
 </Aside>
+
+#### Cost Estimate Queue {#queue-cost-estimate}
+
+After you click **Generate**, the Cost Estimate report is added to a shared report queue for the project and processed in the background. This ensures that multiple reports generated with different filters don’t override one another. Each report is generated separately and appears in the **Reports > Archive** section once completed.
+
+Reports generated by managers have higher priority in the queue. If a manager starts generating a report while a contributor’s report is still in the queue, the manager’s report will be processed first.
+
+When a report is added to the queue, a notification appears confirming that the report generation has been queued, with quick access to view the queue or close the message.
+
+While the report is being generated, a pop-up in the lower-right corner of the screen shows the queue status. The status updates automatically as the report progresses:
+
+* **Pending** – the report is waiting in the queue and has not started processing yet.
+* **In progress** – the report generation has started. A progress bar shows the current percentage.
+* **Completed** – the report has been generated successfully and can be accessed via the [Archive](#archive).
+* **Failed** – an error occurred during report generation.
+
+Each report runs independently, so you can safely generate multiple Cost Estimate reports with different filters without affecting those that might have been started earlier and are still in progress.
 
 ### Rates {#rates-cost-estimate}
 
@@ -168,9 +201,13 @@ When the report is generated, you will see the following amounts:
 
 To download the Cost Estimate report, click **Export** and select the preferred export format (CSV, XLSX, or JSON).
 
+<Aside>
+  The generated Cost Estimate report is available for viewing in the [Archive](#archive) section.
+</Aside>
+
 ## Top Members
 
-The Top Members report allows you to check your position on the list of project members and see who contributed the most to the project's translation.
+The Top Members report allows you to check your position on the list of project members and see who contributed the most to the project's translation over time. This list includes all users who have ever contributed, even if they are no longer current project members.
 
 Default parameters:
 - *Text unit*: words
@@ -331,3 +368,111 @@ When the report is generated, you will see the following amounts:
 To download the My Activity report, click **Export report** and select the preferred export format (CSV, XLSX, or JSON).
 
 If you want to regenerate the report with other rates, click **Edit Rates** in the upper-right corner and follow the procedure again.
+
+## Time Spent
+
+The **Time Spent** report allows you to calculate the price of your contribution (i.e., translation or proofreading) to the project based on the time you spend on tasks.
+
+The report uses the [time you logged](/enterprise/user-tasks/#logging-time-spent-on-a-task) directly in a task's comments.
+
+You can generate a **Time Spent** report based on the following filter parameters:
+
+* **Tasks**: Not selected, All tasks, or multiple specific tasks.
+* **Group by**: Member, Language, or Task.
+* **Time period**: All time, Today, Yesterday, Last 7 days, Last 30 days, Last month, or Custom range.
+* **Language**: All or a specific target language.
+* **Type**: All types, Translate, Proofread, Translate by vendor, or Proofread by vendor.
+
+### Generating a Report {#generating-time-spent}
+
+To generate the **Time Spent** report, follow these steps:
+
+<Steps>
+  1. Select the preferred currency.
+  2. Set your [rates](#rates-time-spent).
+  3. Use the available filter parameters to specify the report data you're interested in.
+  4. Click **Generate**.
+</Steps>
+
+<Aside>
+  Rates are automatically saved after you click **Generate**.
+</Aside>
+
+### Rates {#rates-time-spent}
+
+You can set the hourly prices for your work. Unlike the **My Activity** report, the unit for the **Time Spent** report is fixed to **hour**.
+
+#### Base Rate {#base-rate-time-spent}
+
+In the **Base Rate** section, you can set the hourly rate that will be applied to all work types (translation and proofreading) you do in the project.
+
+#### Adding Custom Rates {#custom-rates-time-spent}
+
+If you are multilingual and work with different languages, you can add custom rates for specific languages. To add custom rates, click **Add custom rates**.
+
+To select the languages for custom rates, click the drop-down menu and select the ones you need. You can create as many custom rates as you need.
+
+#### Rate Templates {#rate-templates-time-spent}
+
+If project managers have saved multiple rate configurations, you can use them for report generation. Click **Templates** to view and select saved rate templates.
+
+<Aside>
+  Templates saved for the **Time Spent** report can't be applied to other reports, and consequently, rate templates saved for other reports can't be applied here.
+</Aside>
+
+### Result Analysis {#result-analysis-time-spent}
+
+When the report is generated, you will see the following amounts:
+
+* **User Information** - profile picture, full name, and username.
+* **Total** - The total calculated cost and total time spent for your contribution during the selected time period.
+* **Language Subtotals** - The report shows a breakdown of costs for each target language:
+    * **Time Spent** - The total time you logged for the work in a specific language.
+    * **Rate per hour** - The hourly rate applied (based on your configured [Base Rate](#base-rate-time-spent) and [Custom Rates](#custom-rates-time-spent)).
+    * **Price** - The total cost calculated for the work in that language.
+
+To download the **Time Spent** report, click **Export** and select the preferred format (CSV, XLSX, or JSON) for further analysis or record-keeping.
+
+<Aside>
+  Reports generated by contributors are not added to the project's shared archive.
+</Aside>
+
+## Archive
+
+The Archive section allows you to access the records of previously generated Cost estimate and My Activity reports, providing a convenient way to review historical data.
+
+This section also eliminates the need to wait for a report generation to complete. You can initiate a report generation and return to it later at your convenience. Within the Archive, you can review the report summary and, if necessary, download it in various supported file formats.
+
+Each project within an organization has its own independent archive section. As a contributor, you can view, export, and delete only the reports you generated yourself.
+
+### Viewing Previously Generated Reports
+
+To view the summary of the previously generated reports (i.e., archive records), follow these steps:
+
+<Steps>
+  1. Open the project and go to **Reports > Archive**.
+  1. Click on the name of the needed archive record.
+  1. Once you open the archive report record, you can view all the needed data.
+</Steps>
+
+<Image src={archiveViewing} alt="Viewing Previously Generated Reports" />
+
+### Exporting Previously Generated Reports
+
+To export the previously generated reports, follow these steps:
+
+<Steps>
+  1. Open the project and go to **Reports > Archive**.
+  1. Click <Icon name="mdi:dots-vertical" class="inline-icon" /> (or right-click) on the needed report in the list.
+  1. Click on the preferred file format to export.
+</Steps>
+
+### Deleting Previously Generated Reports
+
+To delete the previously generated reports, follow these steps:
+
+<Steps>
+  1. Open the project and go to **Reports > Archive**.
+  1. Click <Icon name="mdi:dots-vertical" class="inline-icon" /> (or right-click) on the needed report in the list.
+  1. Click **Delete**.
+</Steps>

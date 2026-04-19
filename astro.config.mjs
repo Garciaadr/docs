@@ -1,15 +1,16 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightLinksValidator from 'starlight-links-validator';
 import starlightHeadingBadges from 'starlight-heading-badges';
+import starlightLlmsTxt from 'starlight-llms-txt';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
 import { remarkHeadingId } from 'remark-custom-heading-id';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 
 import crowdinSidebar from './src/content/sidebars/crowdin.ts';
@@ -65,6 +66,7 @@ const config = defineConfig({
             { label: "Store", link: "https://store.crowdin.com", attrs: { target: "_blank", class: "nav-link" } },
             { label: "Blog", link: "https://crowdin.com/blog", attrs: { target: "_blank", class: "nav-link" } },
             { label: "Community", link: "https://community.crowdin.com/", attrs: { target: "_blank", class: "nav-link" } },
+            { label: "Crowdin.com", link: "https://crowdin.com/", attrs: { target: "_blank", class: "nav-link" } },
           ],
         }
       ],
@@ -128,9 +130,9 @@ const config = defineConfig({
         Hero: './src/components/Hero.astro',
         Search: './src/components/Search.astro',
         SocialIcons: './src/components/SocialIcons.astro',
+        EditLink: './src/components/EditLink.astro',
       },
       customCss: [
-        './src/style/tailwind.css',
         './src/style/global.css',
         './src/style/using-logo.scss',
         './src/style/northern-lights.scss',
@@ -158,13 +160,44 @@ const config = defineConfig({
           ],
         }),
         starlightHeadingBadges(),
+        // https://delucis.github.io/starlight-llms-txt/
+        starlightLlmsTxt({
+          description: 'Knowledge base for Crowdin users. It contains information about Crowdin features, Crowdin Enterprise, and the Developer Portal.',
+          customSets: [
+            {
+              label: 'Crowdin Help',
+              description: 'Crowdin.com documentation',
+              paths: ['**', '!enterprise/**', '!developer/**'],
+            },
+            {
+              label: 'Crowdin Enterprise',
+              description: 'Crowdin Enterprise documentation',
+              paths: ['enterprise/**'],
+            },
+            {
+              label: 'Developer Portal',
+              description: 'Developer Portal documentation',
+              paths: ['developer/**'],
+            },
+            {
+              label: 'API',
+              description: `Crowdin API and Crowdin Enterprise API specs
+- [Crowdin API (file-based)](${site}/_llms-txt/api/crowdin/file-based.txt): index and per-route files.
+- [Crowdin API (string-based)](${site}/_llms-txt/api/crowdin/string-based.txt): index and per-route files.
+- [Crowdin Enterprise API (file-based)](${site}/_llms-txt/api/enterprise/file-based.txt): index and per-route files.
+- [Crowdin Enterprise API (string-based)](${site}/_llms-txt/api/enterprise/string-based.txt): index and per-route files.`,
+              paths: [],
+            },
+          ],
+          exclude: ['ai-fine-tuning', 'enterprise/ai-fine-tuning'],
+        }),
       ],
-      social: {
-        'x.com': 'https://x.com/crowdin',
-        linkedin: 'https://www.linkedin.com/company/crowdin',
-        youtube: 'https://youtube.com/@crowdin-localization',
-        github: 'https://github.com/crowdin',
-      }
+      social: [
+        { icon: 'x.com', label: 'X (Twitter)', href: 'https://x.com/crowdin' },
+        { icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/company/crowdin' },
+        { icon: 'youtube', label: 'YouTube', href: 'https://youtube.com/@crowdin-localization' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/crowdin' },
+      ]
     }),
     // https://docs.astro.build/en/guides/integrations-guide/sitemap/#configuration
     sitemap({
@@ -178,7 +211,6 @@ const config = defineConfig({
         page !== `${site}/iframe/privacy-policy/` &&
         page !== `${site}/iframe/terms/`,
     }),
-    tailwind({ applyBaseStyles: false }),
     icon({
       include: {
         mdi: ['*'],
@@ -191,7 +223,19 @@ const config = defineConfig({
           'file-copy',
           'cleaning-services',
           'create-new-folder-sharp',
-          'folder-data-sharp'
+          'folder-data-sharp',
+          'drag-indicator',
+          'encrypted',
+          'warning',
+          'groups',
+          'reply',
+          'payments',
+          'undo',
+          'split-scene-left-outline',
+          'download'
+        ],
+        garden: [
+          'puzzle-piece-fill-12'
         ],
       }
     })
@@ -212,12 +256,14 @@ const config = defineConfig({
         rehypeExternalLinks,
         {
           target: '_blank', // Open external links in a new tab.
+          rel: 'follow',
         }
       ]
     ],
   },
   vite: {
     plugins: [
+      tailwindcss(),
       viteStaticCopy({
         targets: [
           {

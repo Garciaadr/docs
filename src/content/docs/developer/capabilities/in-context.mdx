@@ -8,6 +8,7 @@ sidebar:
 
 import { Steps, Aside, LinkCard, Tabs, TabItem, Code, LinkButton } from '@astrojs/starlight/components';
 import { Icon } from 'astro-icon/components';
+import { YouTube } from 'astro-embed';
 import QuestionAnswer from '~/components/QuestionAnswer.astro';
 import ReadMore from '~/components/ReadMore.astro';
 import { Image } from 'astro:assets';
@@ -24,9 +25,7 @@ Crowdin In-Context works with the help of a one-line Javascript snippet and pseu
 
 ## Quick Demo
 
-<div style="margin-top: 1.5rem; position: relative; width: 100%; height: 0; padding-bottom: 56.25%; box-shadow: 0 5px 20px rgb(0 0 0 / 10%); border-radius: 6px;overflow:hidden;">
-  <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" height="100%" width="100%" src="https://www.youtube.com/embed/ktfw7UsW3qw" allow="autoplay; encrypted-media"></iframe>
-</div>
+<YouTube id="ktfw7UsW3qw" />
 
 In-Context localization is tied up with your Crowdin project, where translatable files are stored. Translations made using In-Context are added to your project in the same way as translations made directly in the Editor.
 
@@ -105,7 +104,7 @@ _jipt.push(['preload_texts', true]);
 ```
 
 Speeds up dynamic content displaying within the In-Context tool by preloading all source strings.
-Automatically disabled for large projects (5000+ strings). Acceptable values: true, false.
+Automatically disabled for large projects (5000+ strings). Acceptable values: `true`, `false`.
 
 ### Translation Button Always Visible
 
@@ -113,7 +112,7 @@ Automatically disabled for large projects (5000+ strings). Acceptable values: tr
 _jipt.push(['touch_optimized', true]);
 ```
 
-This option is enabled on touchscreens by default and makes the translation button next to each translatable string permanently visible instead of showing on hover. Acceptable values: true, false.
+This option is enabled on touchscreens by default and makes the translation button next to each translatable string permanently visible instead of showing on hover. Acceptable values: `true`, `false`.
 
 ### Before Commit Callback
 
@@ -188,6 +187,22 @@ Defines how In-Context is initialized. Acceptable values:
 - **`manual`** – In-Context starts only when you call [`window.jipt.start()`](#start-and-stop-methods).
 
 Use `manual` if you need greater control. For example, in single-page apps where you want to switch In-Context on or off based on user actions.
+
+### Tagging Only Visible Strings
+
+```js
+_jipt.push(['tag_only_visible_phrases', true]);
+```
+
+When set to `true`, this parameter ensures the screenshot tagging feature only processes strings currently visible in the user's viewport. This is ideal for dynamic interfaces, like single-page applications that use modals or dialogs that cover other on-page content. Enabling this option prevents hidden strings from being tagged, resulting in cleaner screenshots and more accurate context for translators. Acceptable values: `true`, `false`.
+
+### Capture Visible Area Only
+
+```js
+_jipt.push(['screenshot_visible_area_only', true]);
+```
+
+When set to `true`, In-Context captures only the part of the page currently visible in the user's viewport instead of taking a full-page screenshot. This is useful for long pages or dynamic interfaces where you want the screenshot to reflect exactly what translators see on screen. Acceptable values: `true`, `false`.
 
 ## Optional Functions
 
